@@ -62,7 +62,15 @@
       display: flex; flex-direction: column;
       font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
       overflow: hidden;
+      transition: width .35s cubic-bezier(.16,1,.3,1), left .35s cubic-bezier(.16,1,.3,1);
     }
+    #sim-drawer.is-fullscreen {
+      width: 100vw !important;
+      max-width: 100vw !important;
+      left: 0 !important;
+    }
+    #sim-drawer.is-fullscreen .sim-head { padding: 18px 32px 14px; }
+    #sim-drawer.is-fullscreen .sim-toolbar { padding: 12px 32px; }
     .sim-head {
       padding: 22px 26px 16px;
       border-bottom: 1px solid rgba(255,255,255,0.08);
@@ -195,15 +203,11 @@
     drawer.querySelector('#sim-reset').addEventListener('click', resetSim);
     drawer.querySelector('#sim-fullscreen').addEventListener('click', (e) => {
       e.preventDefault();
-      // Truco anti-popup-blocker: crear y clickear un <a target="_blank">
-      const a = document.createElement('a');
-      a.href = '11-simulador.html';
-      a.target = '_blank';
-      a.rel = 'noopener';
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      closeDrawer();
+      drawer.classList.toggle('is-fullscreen');
+      const btn = drawer.querySelector('#sim-fullscreen');
+      const isFs = drawer.classList.contains('is-fullscreen');
+      btn.textContent = isFs ? '↙️ Reducir' : '🔍 Pantalla completa';
+      if (backdrop) backdrop.style.display = isFs ? 'none' : 'block';
     });
 
     updateSaveStatus();

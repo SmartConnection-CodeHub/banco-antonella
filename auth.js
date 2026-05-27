@@ -1,10 +1,10 @@
 /* ===========================================================
-   Marketplace SMC · Banco · Auth Gate (light barrier)
+   Banco Antonella · Auth Gate (light barrier)
    ⚠️ Barrera UI · cualquiera con devtools puede bypass.
    =========================================================== */
 (function(){
-  // SHA-256 del PIN "hoku" (4 caracteres · nombre del agente IA)
-  const PIN_HASH = '6d2debd249a866cf0d19274260c7012b52725a404807dc8c5ef7e86d00ce8c03';
+  // SHA-256 del PIN "anto" (4 caracteres · banco Antonella)
+  const PIN_HASH = '0348beb745f863940c77cc68dc7b724fd5998186f5c2ad4e72febbb6c0be0578';
   const PIN_LEN  = 4;
 
   async function sha256(text){
@@ -104,7 +104,7 @@
             </svg>
             <div class="smc-brand">SMART<span>CONNECTION</span></div>
           </div>
-          <h1 class="smc-title">Banco · Marketplace SMC</h1>
+          <h1 class="smc-title">Banco · Antonella</h1>
           <p class="smc-sub">Ingresa tu PIN de acceso</p>
           <div class="smc-boxes" id="smc-boxes">
             ${Array.from({length: PIN_LEN}).map((_, i) =>

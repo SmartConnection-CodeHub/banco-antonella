@@ -45,14 +45,14 @@
       50%      { transform: translateY(-50%) translateX(-3px); }
     }
 
-    /* botón centrado vertical · lateral derecho */
+    /* botón centrado vertical · lateral IZQUIERDO · más chico */
     #smc-nav-toggle {
       position: fixed;
-      top: 50%; right: 22px;
+      top: 50%; left: 18px;
       transform: translateY(-50%);
       z-index: 9998;
-      width: 56px; height: 56px;
-      border-radius: 16px;
+      width: 44px; height: 44px;
+      border-radius: 13px;
       background: linear-gradient(135deg, #1B2F4E 0%, #E8A5B8 100%);
       backdrop-filter: blur(12px);
       border: 1px solid rgba(194, 114, 143, 0.45);
@@ -60,10 +60,10 @@
       display: flex; align-items: center; justify-content: center;
       cursor: pointer;
       transition: background .2s ease, box-shadow .2s ease;
-      animation: smc-nav-bob 4s ease-in-out infinite;
+      animation: smc-nav-bob 6s ease-in-out infinite;
     }
 
-    /* 2 anillos radar concéntricos · stagger 1s */
+    /* 2 anillos radar · LENTO 5s · stagger 2.5s */
     #smc-nav-toggle::before,
     #smc-nav-toggle::after {
       content: '';
@@ -71,10 +71,10 @@
       inset: 0;
       border-radius: inherit;
       border: 2px solid #C2728F;
-      animation: smc-nav-radar 2.4s cubic-bezier(.22, 1, .36, 1) infinite;
+      animation: smc-nav-radar 5s cubic-bezier(.22, 1, .36, 1) infinite;
       pointer-events: none;
     }
-    #smc-nav-toggle::after { animation-delay: 1.2s; }
+    #smc-nav-toggle::after { animation-delay: 2.5s; }
 
     /* hover · pausa radar · agranda · brilla teal */
     #smc-nav-toggle:hover {
@@ -95,7 +95,7 @@
     #smc-nav-toggle.open::before,
     #smc-nav-toggle.open::after { opacity: 0; }
 
-    #smc-nav-toggle svg { width: 26px; height: 26px; position: relative; z-index: 1; }
+    #smc-nav-toggle svg { width: 22px; height: 22px; position: relative; z-index: 1; }
     #smc-nav-toggle .bar { stroke: #C2728F; stroke-width: 2.5; stroke-linecap: round; transition: all .25s ease; }
     #smc-nav-toggle:hover .bar { stroke: white; }
     #smc-nav-toggle.open .bar-1 { transform: rotate(45deg) translate(4px, 4px); }
@@ -103,12 +103,12 @@
     #smc-nav-toggle.open .bar-3 { transform: rotate(-45deg) translate(4px, -4px); }
     #smc-nav-toggle.open .bar { stroke: white; }
 
-    /* mobile · botón más chico, esquina inferior */
+    /* mobile · botón esquina inferior IZQUIERDA */
     @media (max-width: 800px) {
       #smc-nav-toggle {
-        top: auto; bottom: 24px; right: 18px;
+        top: auto; bottom: 24px; left: 18px;
         transform: translateY(0);
-        width: 52px; height: 52px;
+        width: 44px; height: 44px;
         animation: none;
       }
       @keyframes smc-nav-radar {

@@ -74,6 +74,36 @@
 
 <a href="index.html" class="nav-back">← Banco</a>
 
+<div id="sim-save-bar" style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;gap:8px;padding:8px 12px;background:rgba(27,47,78,.92);backdrop-filter:blur(12px);border-radius:99px;box-shadow:0 10px 40px rgba(0,0,0,.30),0 0 0 1px rgba(196,154,58,.25);">
+  <button id="sim-save-export" style="appearance:none;border:1px solid rgba(196,154,58,.45);background:rgba(196,154,58,.18);color:#F0CB6E;padding:8px 16px;border-radius:99px;font:700 11px var(--font);letter-spacing:.06em;text-transform:uppercase;cursor:pointer;">💾 Exportar JSON</button>
+  <button id="sim-save-copy" style="appearance:none;border:1px solid rgba(232,165,184,.45);background:rgba(232,165,184,.18);color:#F5E0E8;padding:8px 16px;border-radius:99px;font:700 11px var(--font);letter-spacing:.06em;text-transform:uppercase;cursor:pointer;">📋 Copiar</button>
+</div>
+<script>
+(function(){
+  const KEY = 'banco-antonella-sim-v1';
+  function show(msg){
+    const t=document.createElement('div');t.textContent=msg;
+    t.style.cssText='position:fixed;top:80px;left:50%;transform:translateX(-50%);z-index:99999;padding:10px 20px;background:#C49A3A;color:#1B2F4E;border-radius:99px;font:700 12px var(--font);box-shadow:0 8px 24px rgba(0,0,0,.25);';
+    document.body.appendChild(t);setTimeout(()=>t.remove(),2400);
+  }
+  function ready(fn){ if(document.readyState!='loading') fn(); else document.addEventListener('DOMContentLoaded',fn); }
+  ready(()=>{
+    document.getElementById('sim-save-export').onclick=()=>{
+      const s=JSON.parse(localStorage.getItem(KEY)||'{}');
+      const wrap={banco:'antonella',exportedAt:new Date().toISOString(),simulator:s,readme:'Pega en docs/sim-state.json y commitea para versionar.'};
+      const blob=new Blob([JSON.stringify(wrap,null,2)],{type:'application/json'});
+      const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`sim-antonella-${new Date().toISOString().slice(0,10)}.json`;a.click();
+      show('✅ JSON descargado');
+    };
+    document.getElementById('sim-save-copy').onclick=async()=>{
+      const s=JSON.parse(localStorage.getItem(KEY)||'{}');
+      await navigator.clipboard.writeText(JSON.stringify(s,null,2));
+      show('📋 Copiado · pega en docs/sim-state.json');
+    };
+  });
+})();
+</script>
+
 <div class="sim-wrap">
 
   <div class="sim-hero">

@@ -171,9 +171,7 @@
         </button>
       </div>
       <div class="sim-toolbar">
-        <button class="sim-btn save" id="sim-save">💾 Guardar</button>
-        <button class="sim-btn gold" id="sim-print">🖨️ Guardar PDF</button>
-        <button class="sim-btn" id="sim-whatsapp">📱 WhatsApp</button>
+        <button class="sim-btn save" id="sim-save">💾 Guardar cambios</button>
         <button class="sim-btn" id="sim-fullscreen">🔍 Pantalla completa</button>
         <button class="sim-btn danger" id="sim-reset">↺ Reiniciar</button>
       </div>

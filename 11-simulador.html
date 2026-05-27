@@ -75,8 +75,8 @@
 <a href="index.html" class="nav-back">← Banco</a>
 
 <div id="sim-save-bar" style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;gap:8px;padding:8px 12px;background:rgba(27,47,78,.92);backdrop-filter:blur(12px);border-radius:99px;box-shadow:0 10px 40px rgba(0,0,0,.30),0 0 0 1px rgba(196,154,58,.25);">
-  <button id="sim-save-export" style="appearance:none;border:1px solid rgba(196,154,58,.45);background:rgba(196,154,58,.18);color:#F0CB6E;padding:8px 16px;border-radius:99px;font:700 11px var(--font);letter-spacing:.06em;text-transform:uppercase;cursor:pointer;">💾 Exportar JSON</button>
-  <button id="sim-save-copy" style="appearance:none;border:1px solid rgba(232,165,184,.45);background:rgba(232,165,184,.18);color:#F5E0E8;padding:8px 16px;border-radius:99px;font:700 11px var(--font);letter-spacing:.06em;text-transform:uppercase;cursor:pointer;">📋 Copiar</button>
+  <button id="sim-save-print" style="appearance:none;border:1px solid rgba(196,154,58,.45);background:rgba(196,154,58,.18);color:#F0CB6E;padding:8px 16px;border-radius:99px;font:700 11px var(--font);letter-spacing:.06em;text-transform:uppercase;cursor:pointer;">🖨️ Guardar PDF</button>
+  <button id="sim-save-wa" style="appearance:none;border:1px solid rgba(122,210,124,.45);background:rgba(122,210,124,.18);color:#A8E0AA;padding:8px 16px;border-radius:99px;font:700 11px var(--font);letter-spacing:.06em;text-transform:uppercase;cursor:pointer;">📱 WhatsApp</button>
 </div>
 <script>
 (function(){
@@ -86,23 +86,45 @@
     t.style.cssText='position:fixed;top:80px;left:50%;transform:translateX(-50%);z-index:99999;padding:10px 20px;background:#C49A3A;color:#1B2F4E;border-radius:99px;font:700 12px var(--font);box-shadow:0 8px 24px rgba(0,0,0,.25);';
     document.body.appendChild(t);setTimeout(()=>t.remove(),2400);
   }
+  function getState(){ try{ return JSON.parse(localStorage.getItem(KEY)||'{}'); }catch(e){ return {}; } }
   function ready(fn){ if(document.readyState!='loading') fn(); else document.addEventListener('DOMContentLoaded',fn); }
   ready(()=>{
-    document.getElementById('sim-save-export').onclick=()=>{
-      const s=JSON.parse(localStorage.getItem(KEY)||'{}');
-      const wrap={banco:'antonella',exportedAt:new Date().toISOString(),simulator:s,readme:'Pega en docs/sim-state.json y commitea para versionar.'};
-      const blob=new Blob([JSON.stringify(wrap,null,2)],{type:'application/json'});
-      const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`sim-antonella-${new Date().toISOString().slice(0,10)}.json`;a.click();
-      show('✅ JSON descargado');
+    document.getElementById('sim-save-print').onclick=()=>{
+      show('🖨️ Elegí "Guardar como PDF" en el diálogo');
+      setTimeout(()=>window.print(),400);
     };
-    document.getElementById('sim-save-copy').onclick=async()=>{
-      const s=JSON.parse(localStorage.getItem(KEY)||'{}');
-      await navigator.clipboard.writeText(JSON.stringify(s,null,2));
-      show('📋 Copiado · pega en docs/sim-state.json');
+    document.getElementById('sim-save-wa').onclick=()=>{
+      const s=getState();
+      let txt='*Mi proyecto Centro Estética*\n_Banco Antonella · simulador_\n\n';
+      if(s.serv){
+        const tv=Object.values(s.serv).reduce((a,v)=>a+(v.v||0),0);
+        const tf=Object.values(s.serv).reduce((a,v)=>a+((v.v||0)*(v.p||0)),0);
+        if(tf>0){ txt+=`💅 *Facturación mensual:*\n$${tf.toLocaleString('es-CL')} CLP · ${tv} visitas/mes\n\n`; }
+      }
+      if(s.stackChecked){
+        const f={abeja:'Capital Abeja $3.5M',semilla:'Capital Semilla $3.5M',sence:'SENCE $500K',corfo:'CORFO Mujer $8M',prochile:'ProChile $5M',fosis:'FOSIS $1.1M'};
+        const e=Object.keys(s.stackChecked).filter(k=>s.stackChecked[k]&&f[k]).map(k=>'• '+f[k]);
+        if(e.length){ txt+=`🎯 *Fondos a postular:*\n${e.join('\n')}\n\n`; }
+      }
+      if(s.projValues&&s.projValues.fact_regimen){ txt+=`📈 *Meta mes 6:* $${(+s.projValues.fact_regimen).toLocaleString('es-CL')}\n`; }
+      window.open(`https://wa.me/?text=${encodeURIComponent(txt)}`,'_blank');
+      show('📱 Abriendo WhatsApp...');
     };
   });
 })();
 </script>
+
+<style>
+@media print {
+  body { background: white !important; }
+  .nav-back, #sim-save-bar, #sim-trigger, #smc-nav-toggle, .anto-petals, .anto-sparkles { display: none !important; }
+  .sim-tabs button:not(.active) { display: none !important; }
+  .panel { display: block !important; page-break-inside: avoid; }
+  .sim-wrap { max-width: 100% !important; padding: 20px !important; }
+  .totals { color: #1B2F4E !important; background: #f5edd8 !important; }
+  .totals * { color: #1B2F4E !important; }
+}
+</style>
 
 <div class="sim-wrap">
 

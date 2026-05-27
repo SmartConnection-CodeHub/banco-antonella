@@ -168,10 +168,13 @@
         </button>
       </div>
       <div class="sim-toolbar">
-        <button class="sim-btn gold" id="sim-export">💾 Exportar JSON</button>
-        <button class="sim-btn" id="sim-copy">📋 Copiar al portapapeles</button>
-        <button class="sim-btn danger" id="sim-reset">↺ Restaurar defaults</button>
-        <button class="sim-btn" id="sim-fullscreen">🔍 Abrir página completa</button>
+        <button class="sim-btn gold" id="sim-print">🖨️ Guardar como PDF</button>
+        <button class="sim-btn" id="sim-whatsapp">📱 Compartir por WhatsApp</button>
+        <button class="sim-btn" id="sim-fullscreen">🔍 Abrir en pantalla completa</button>
+        <button class="sim-btn danger" id="sim-reset">↺ Volver a valores iniciales</button>
+      </div>
+      <div style="padding:8px 26px;background:rgba(196,154,58,.08);font:600 11px var(--font);color:#C49A3A;border-bottom:1px solid rgba(255,255,255,.06);">
+        ✨ Tus cambios se guardan solos · podés cerrar y volver cuando quieras
       </div>
       <div class="sim-body">
         <iframe id="sim-iframe" src="11-simulador.html?embed=1"></iframe>
@@ -182,8 +185,8 @@
     drawer.querySelector('.sim-close').addEventListener('click', closeDrawer);
     document.addEventListener('keydown', escClose);
 
-    drawer.querySelector('#sim-export').addEventListener('click', exportJSON);
-    drawer.querySelector('#sim-copy').addEventListener('click', copyJSON);
+    drawer.querySelector('#sim-print').addEventListener('click', printPDF);
+    drawer.querySelector('#sim-whatsapp').addEventListener('click', shareWhatsApp);
     drawer.querySelector('#sim-reset').addEventListener('click', resetSim);
     drawer.querySelector('#sim-fullscreen').addEventListener('click', () => {
       window.location.href = '11-simulador.html';
@@ -197,39 +200,68 @@
   function escClose(e) { if (e.key === 'Escape') closeDrawer(); }
   trigger.addEventListener('click', openDrawer);
 
-  // ─── Acciones toolbar ───
+  // ─── Acciones toolbar (humanizadas) ───
   function getState() {
     try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch (e) { return {}; }
   }
-  function exportJSON() {
-    const state = getState();
-    const wrap = {
-      banco: 'antonella',
-      exportedAt: new Date().toISOString(),
-      simulator: state,
-      readme: 'Para guardar estos valores en el repo · pega este JSON dentro de docs/sim-state.json y commitea.'
-    };
-    const blob = new Blob([JSON.stringify(wrap, null, 2)], {type: 'application/json'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `sim-antonella-${new Date().toISOString().slice(0,10)}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-    showToast('✅ JSON descargado');
+
+  // Imprimir / Guardar PDF · abre print dialog del iframe (todos saben "guardar como PDF")
+  function printPDF() {
+    const iframe = document.getElementById('sim-iframe');
+    if (!iframe || !iframe.contentWindow) return showToast('⚠️ Abrí primero el simulador');
+    try {
+      iframe.contentWindow.focus();
+      iframe.contentWindow.print();
+      showToast('🖨️ Elegí "Guardar como PDF" en el diálogo');
+    } catch (e) {
+      window.location.href = '11-simulador.html';
+    }
   }
-  function copyJSON() {
-    const state = getState();
-    const txt = JSON.stringify(state, null, 2);
-    navigator.clipboard?.writeText(txt).then(() => showToast('📋 Copiado · pega en docs/sim-state.json'));
+
+  // Compartir por WhatsApp · arma un resumen legible de los números
+  function shareWhatsApp() {
+    const s = getState();
+    let resumen = `*Mi proyecto Centro Estética*\n_Banco Antonella · simulador_\n\n`;
+
+    // Servicios y volumen
+    if (s.serv) {
+      const totalVis = Object.values(s.serv).reduce((a, v) => a + (v.v || 0), 0);
+      const totalFact = Object.values(s.serv).reduce((a, v) => a + ((v.v || 0) * (v.p || 0)), 0);
+      if (totalFact > 0) {
+        resumen += `💅 *Facturación mensual estimada:*\n$${totalFact.toLocaleString('es-CL')} CLP\n`;
+        resumen += `📊 Visitas/mes: ${totalVis}\n\n`;
+      }
+    }
+
+    // Stack de fondos
+    if (s.stackChecked) {
+      const fondos = {abeja: 'Capital Abeja $3.5M', semilla: 'Capital Semilla $3.5M', sence: 'SENCE $500K', corfo: 'CORFO Mujer $8M', prochile: 'ProChile $5M', fosis: 'FOSIS $1.1M'};
+      const elegidos = Object.keys(s.stackChecked).filter(k => s.stackChecked[k] && fondos[k]).map(k => '• ' + fondos[k]);
+      if (elegidos.length > 0) {
+        resumen += `🎯 *Fondos que voy a postular:*\n${elegidos.join('\n')}\n\n`;
+      }
+    }
+
+    // Proyección
+    if (s.projValues) {
+      const fi = s.projValues.fact_inicial || 0;
+      const fr = s.projValues.fact_regimen || 0;
+      if (fr) resumen += `📈 *Meta facturación mes 6:* $${(+fr).toLocaleString('es-CL')}\n`;
+    }
+
+    resumen += `\n🔗 Banco completo: ${window.location.origin + window.location.pathname.replace('index.html','')}`;
+
+    const url = `https://wa.me/?text=${encodeURIComponent(resumen)}`;
+    window.open(url, '_blank');
+    showToast('📱 Abriendo WhatsApp...');
   }
+
   function resetSim() {
-    if (!confirm('¿Borrar todos los valores guardados del simulador?')) return;
+    if (!confirm('¿Volver a los valores iniciales del simulador?\n\nTus cambios actuales se perderán.')) return;
     localStorage.removeItem(STORAGE_KEY);
-    // Recargar el iframe para reflejar los defaults
     const iframe = document.getElementById('sim-iframe');
     if (iframe) iframe.src = iframe.src;
-    showToast('↺ Valores restaurados');
+    showToast('↺ Valores iniciales restaurados');
   }
   function showToast(msg) {
     const t = document.createElement('div');

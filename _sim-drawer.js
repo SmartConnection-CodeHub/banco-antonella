@@ -193,9 +193,17 @@
     drawer.querySelector('#sim-print').addEventListener('click', printPDF);
     drawer.querySelector('#sim-whatsapp').addEventListener('click', shareWhatsApp);
     drawer.querySelector('#sim-reset').addEventListener('click', resetSim);
-    drawer.querySelector('#sim-fullscreen').addEventListener('click', () => {
+    drawer.querySelector('#sim-fullscreen').addEventListener('click', (e) => {
+      e.preventDefault();
+      // Truco anti-popup-blocker: crear y clickear un <a target="_blank">
+      const a = document.createElement('a');
+      a.href = '11-simulador.html';
+      a.target = '_blank';
+      a.rel = 'noopener';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
       closeDrawer();
-      window.open('11-simulador.html', '_blank');
     });
 
     updateSaveStatus();

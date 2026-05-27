@@ -1,0 +1,176 @@
+/* ============================================================
+   Banco Antonella · Table Motion · animaciones para tablas
+   · Stagger fade-in al scroll
+   · Highlight de fila destacada
+   · Pulse en indicadores de urgencia
+   ============================================================ */
+
+/* Tabla base · mejor visual */
+table {
+  position: relative;
+  border-spacing: 0;
+  border-collapse: separate !important;
+  border-radius: 16px !important;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(194, 114, 143, .08),
+              0 1px 3px rgba(27, 47, 78, .04) !important;
+}
+
+thead th {
+  position: relative;
+  background: linear-gradient(135deg, #1B2F4E, #0F1F38) !important;
+  font-weight: 800 !important;
+  letter-spacing: .14em !important;
+}
+thead th::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #C2728F, #C49A3A, #C2728F, transparent);
+  background-size: 200% 100%;
+  animation: anto-tbl-shimmer 4s linear infinite;
+}
+@keyframes anto-tbl-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Filas · stagger entrada con scroll */
+tbody tr {
+  opacity: 0;
+  transform: translateY(12px);
+  animation: anto-row-in .6s cubic-bezier(.4,0,.2,1) forwards;
+  position: relative;
+}
+@keyframes anto-row-in {
+  to { opacity: 1; transform: translateY(0); }
+}
+tbody tr:nth-child(1)  { animation-delay: .05s; }
+tbody tr:nth-child(2)  { animation-delay: .12s; }
+tbody tr:nth-child(3)  { animation-delay: .19s; }
+tbody tr:nth-child(4)  { animation-delay: .26s; }
+tbody tr:nth-child(5)  { animation-delay: .33s; }
+tbody tr:nth-child(6)  { animation-delay: .40s; }
+tbody tr:nth-child(7)  { animation-delay: .47s; }
+tbody tr:nth-child(8)  { animation-delay: .54s; }
+tbody tr:nth-child(9)  { animation-delay: .61s; }
+tbody tr:nth-child(10) { animation-delay: .68s; }
+
+/* Hover row · brillo lateral */
+tbody tr { transition: background .25s, transform .25s; }
+tbody tr:hover {
+  background: linear-gradient(90deg, rgba(232,165,184,.15), rgba(232,165,184,.05) 50%, transparent) !important;
+  transform: translateX(4px);
+}
+tbody tr:hover td:first-child {
+  position: relative;
+}
+tbody tr:hover td:first-child::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, #C2728F, #C49A3A);
+  border-radius: 0 3px 3px 0;
+  animation: anto-row-bar .3s ease-out;
+}
+@keyframes anto-row-bar {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
+}
+
+/* Highlight de fila destacada (primera fila · Capital Abeja en doc 03) */
+.tbl-highlight tbody tr:first-child,
+table:not(.tbl-no-highlight) tbody tr:first-child {
+  background: linear-gradient(90deg, rgba(122,210,124,.12), rgba(122,210,124,.04) 60%, transparent) !important;
+  position: relative;
+}
+table:not(.tbl-no-highlight) tbody tr:first-child::after {
+  content: '⭐ RECOMENDADO';
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  font: 700 9px var(--font, sans-serif);
+  letter-spacing: .14em;
+  color: #4A7A5A;
+  padding: 3px 8px;
+  background: rgba(122,210,124,.20);
+  border: 1px solid rgba(122,210,124,.40);
+  border-radius: 99px;
+  pointer-events: none;
+  opacity: 0;
+  animation: anto-recom-in 1s ease-out 1s forwards;
+}
+@keyframes anto-recom-in {
+  to { opacity: 1; }
+}
+
+/* Pulse para indicadores 🔥 (urgencia) y 🟢 (mejor opción) */
+tbody td {
+  position: relative;
+  transition: color .25s;
+}
+
+/* Targeting de emojis de estado dentro de la tabla */
+tbody td::before { content: ''; }
+
+/* Mejor: aplicar pulse via clase JS · ver _table-motion.js */
+.tbl-pulse-fire {
+  display: inline-block;
+  animation: anto-fire-pulse 1.6s ease-in-out infinite;
+  filter: drop-shadow(0 0 4px rgba(208, 74, 58, .6));
+}
+@keyframes anto-fire-pulse {
+  0%, 100% { transform: scale(1) rotate(-3deg); }
+  50%      { transform: scale(1.15) rotate(3deg); }
+}
+
+.tbl-pulse-warn {
+  display: inline-block;
+  animation: anto-warn-pulse 2s ease-in-out infinite;
+}
+@keyframes anto-warn-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: .6; transform: scale(1.08); }
+}
+
+.tbl-pulse-green {
+  display: inline-block;
+  animation: anto-green-pulse 3s ease-in-out infinite;
+  filter: drop-shadow(0 0 3px rgba(122,210,124,.5));
+}
+@keyframes anto-green-pulse {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.08); }
+}
+
+/* Strong / negrita en table · color rose */
+tbody td strong {
+  color: #1B2F4E;
+  position: relative;
+  z-index: 1;
+}
+tbody tr:hover td strong {
+  color: #C2728F;
+}
+
+/* Mobile: scroll horizontal smooth */
+@media (max-width: 720px) {
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+  table tbody tr:hover { transform: none; }
+}
+
+/* Reduced motion respect */
+@media (prefers-reduced-motion: reduce) {
+  tbody tr, thead th::after, .tbl-pulse-fire, .tbl-pulse-warn, .tbl-pulse-green {
+    animation: none !important;
+  }
+  tbody tr { opacity: 1; transform: none; }
+}

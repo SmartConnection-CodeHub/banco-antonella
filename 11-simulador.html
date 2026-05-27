@@ -75,8 +75,10 @@
 <a href="index.html" class="nav-back">← Banco</a>
 
 <div id="sim-save-bar" style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;gap:8px;padding:8px 12px;background:rgba(27,47,78,.92);backdrop-filter:blur(12px);border-radius:99px;box-shadow:0 10px 40px rgba(0,0,0,.30),0 0 0 1px rgba(196,154,58,.25);">
-  <button id="sim-save-print" style="appearance:none;border:1px solid rgba(196,154,58,.45);background:rgba(196,154,58,.18);color:#F0CB6E;padding:8px 16px;border-radius:99px;font:700 11px var(--font);letter-spacing:.06em;text-transform:uppercase;cursor:pointer;">🖨️ Guardar PDF</button>
+  <button id="sim-save-main" style="appearance:none;border:1px solid #C2728F;background:linear-gradient(135deg,#C2728F,#8E5870);color:#fff;padding:8px 18px;border-radius:99px;font:800 11px var(--font);letter-spacing:.06em;text-transform:uppercase;cursor:pointer;box-shadow:0 4px 14px rgba(194,114,143,.30);">💾 Guardar</button>
+  <button id="sim-save-print" style="appearance:none;border:1px solid rgba(196,154,58,.45);background:rgba(196,154,58,.18);color:#F0CB6E;padding:8px 16px;border-radius:99px;font:700 11px var(--font);letter-spacing:.06em;text-transform:uppercase;cursor:pointer;">🖨️ PDF</button>
   <button id="sim-save-wa" style="appearance:none;border:1px solid rgba(122,210,124,.45);background:rgba(122,210,124,.18);color:#A8E0AA;padding:8px 16px;border-radius:99px;font:700 11px var(--font);letter-spacing:.06em;text-transform:uppercase;cursor:pointer;">📱 WhatsApp</button>
+  <span id="sim-save-status" style="margin-left:8px;align-self:center;font:600 10px var(--font);color:rgba(255,255,255,.6);letter-spacing:.04em;"></span>
 </div>
 <script>
 (function(){
@@ -88,7 +90,26 @@
   }
   function getState(){ try{ return JSON.parse(localStorage.getItem(KEY)||'{}'); }catch(e){ return {}; } }
   function ready(fn){ if(document.readyState!='loading') fn(); else document.addEventListener('DOMContentLoaded',fn); }
+  function updateStatus(){
+    const last=localStorage.getItem(KEY+':lastSave');
+    const el=document.getElementById('sim-save-status');
+    if(!el) return;
+    if(last){
+      const ago=Math.round((Date.now()-+last)/1000);
+      const when=ago<60?`hace ${ago}s`:ago<3600?`hace ${Math.round(ago/60)} min`:new Date(+last).toLocaleString('es-CL');
+      el.textContent=`✓ Guardado ${when}`;
+    }else{
+      el.textContent='';
+    }
+  }
   ready(()=>{
+    updateStatus();
+    setInterval(updateStatus,30000);
+    document.getElementById('sim-save-main').onclick=()=>{
+      localStorage.setItem(KEY+':lastSave',String(Date.now()));
+      updateStatus();
+      show('✓ Guardado · tus números están seguros');
+    };
     document.getElementById('sim-save-print').onclick=()=>{
       show('🖨️ Elegí "Guardar como PDF" en el diálogo');
       setTimeout(()=>window.print(),400);

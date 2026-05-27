@@ -111,6 +111,9 @@
     .sim-btn.gold:hover { background: #C49A3A; color: #1B2F4E; }
     .sim-btn.danger { background: rgba(155,30,50,.20); border-color: rgba(194,74,85,.45); color: #FF9AAB; }
     .sim-btn.danger:hover { background: #8E1E32; color: #fff; }
+    .sim-btn.save { background: linear-gradient(135deg, #C2728F, #8E5870); border-color: #C2728F; color: #fff; font-weight: 800; }
+    .sim-btn.save:hover { background: linear-gradient(135deg, #8E5870, #6E4055); transform: translateY(-1px); box-shadow: 0 6px 18px rgba(194,114,143,.35); }
+    .sim-btn.save:active { transform: translateY(0); }
 
     .sim-body {
       flex: 1; overflow: hidden;
@@ -168,13 +171,15 @@
         </button>
       </div>
       <div class="sim-toolbar">
-        <button class="sim-btn gold" id="sim-print">🖨️ Guardar como PDF</button>
-        <button class="sim-btn" id="sim-whatsapp">📱 Compartir por WhatsApp</button>
-        <button class="sim-btn" id="sim-fullscreen">🔍 Abrir en pantalla completa</button>
-        <button class="sim-btn danger" id="sim-reset">↺ Volver a valores iniciales</button>
+        <button class="sim-btn save" id="sim-save">💾 Guardar</button>
+        <button class="sim-btn gold" id="sim-print">🖨️ Guardar PDF</button>
+        <button class="sim-btn" id="sim-whatsapp">📱 WhatsApp</button>
+        <button class="sim-btn" id="sim-fullscreen">🔍 Pantalla completa</button>
+        <button class="sim-btn danger" id="sim-reset">↺ Reiniciar</button>
       </div>
-      <div style="padding:8px 26px;background:rgba(196,154,58,.08);font:600 11px var(--font);color:#C49A3A;border-bottom:1px solid rgba(255,255,255,.06);">
-        ✨ Tus cambios se guardan solos · podés cerrar y volver cuando quieras
+      <div id="sim-save-status" style="padding:8px 26px;background:rgba(122,210,124,.10);font:600 11px var(--font);color:#A8E0AA;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;gap:8px;">
+        <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#7AD27C;box-shadow:0 0 8px #7AD27C;"></span>
+        <span id="sim-save-msg">Tus cambios se guardan solos · click 💾 Guardar para confirmar</span>
       </div>
       <div class="sim-body">
         <iframe id="sim-iframe" src="11-simulador.html?embed=1"></iframe>
@@ -185,12 +190,35 @@
     drawer.querySelector('.sim-close').addEventListener('click', closeDrawer);
     document.addEventListener('keydown', escClose);
 
+    drawer.querySelector('#sim-save').addEventListener('click', saveSnapshot);
     drawer.querySelector('#sim-print').addEventListener('click', printPDF);
     drawer.querySelector('#sim-whatsapp').addEventListener('click', shareWhatsApp);
     drawer.querySelector('#sim-reset').addEventListener('click', resetSim);
     drawer.querySelector('#sim-fullscreen').addEventListener('click', () => {
       window.location.href = '11-simulador.html';
     });
+
+    updateSaveStatus();
+  }
+  function updateSaveStatus() {
+    const last = localStorage.getItem(STORAGE_KEY + ':lastSave');
+    const msgEl = document.getElementById('sim-save-msg');
+    if (!msgEl) return;
+    if (last) {
+      const d = new Date(+last);
+      const ago = Math.round((Date.now() - +last) / 1000);
+      let when = ago < 60 ? `hace ${ago}s` : ago < 3600 ? `hace ${Math.round(ago/60)} min` : d.toLocaleString('es-CL');
+      msgEl.textContent = `✓ Último guardado: ${when}`;
+    } else {
+      msgEl.textContent = 'Tus cambios se guardan solos · click 💾 Guardar para confirmar';
+    }
+  }
+  function saveSnapshot() {
+    // El localStorage ya tiene state · solo le ponemos timestamp visible
+    const now = Date.now();
+    localStorage.setItem(STORAGE_KEY + ':lastSave', String(now));
+    updateSaveStatus();
+    showToast('✓ Guardado · tus números están seguros');
   }
   function closeDrawer() {
     document.removeEventListener('keydown', escClose);

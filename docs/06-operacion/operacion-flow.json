@@ -1,59 +1,31 @@
 {
   "title": "Flujo operativo · Centro Estética Antonella",
-  "groups": [
-    {
-      "id": "entrada",
-      "label": "Canales de entrada",
-      "color": "#C49A3A",
-      "nodes": [
-        {"id": "local",  "label": "Local físico\nvecina barrio",   "x": 5,  "y": 15},
-        {"id": "ig",     "label": "Instagram\n+ Google Maps",       "x": 5,  "y": 40},
-        {"id": "wa",     "label": "WhatsApp\nreferidas",            "x": 5,  "y": 65}
-      ]
-    },
-    {
-      "id": "core",
-      "label": "Operación cabina",
-      "color": "#6B9B7A",
-      "nodes": [
-        {"id": "agenda", "label": "Agenda online\n24/7",            "x": 38, "y": 25},
-        {"id": "diag",   "label": "Recepción\n+ diagnóstico",       "x": 38, "y": 50},
-        {"id": "sesion", "label": "Sesión\nservicio",               "x": 62, "y": 40}
-      ]
-    },
-    {
-      "id": "salida",
-      "label": "Salidas + retención",
-      "color": "#1B2F4E",
-      "nodes": [
-        {"id": "venta",  "label": "Cobro\nWebpay/cash",             "x": 88, "y": 20},
-        {"id": "up",     "label": "Upsell\nproducto",               "x": 88, "y": 45},
-        {"id": "fideli", "label": "Reagenda\n+ post-venta",         "x": 88, "y": 70}
-      ]
-    },
-    {
-      "id": "recursos",
-      "label": "Recursos clave",
-      "color": "#D04A3A",
-      "nodes": [
-        {"id": "anto",   "label": "Anto\n+ know-how",               "x": 25, "y": 85},
-        {"id": "equipo", "label": "Equipos\nprofesionales",         "x": 50, "y": 85},
-        {"id": "rommi",  "label": "Red Rommina\nproveedores",       "x": 75, "y": 85}
-      ]
-    }
-  ],
-  "edges": [
-    {"from": "local", "to": "diag"},
-    {"from": "ig", "to": "agenda"},
-    {"from": "wa", "to": "agenda"},
-    {"from": "agenda", "to": "diag"},
-    {"from": "diag", "to": "sesion"},
-    {"from": "sesion", "to": "venta"},
-    {"from": "sesion", "to": "up"},
-    {"from": "venta", "to": "fideli"},
-    {"from": "up", "to": "fideli"},
-    {"from": "anto", "to": "sesion", "style": "dashed"},
-    {"from": "equipo", "to": "sesion", "style": "dashed"},
-    {"from": "rommi", "to": "up", "style": "dashed"}
+  "blocks": {
+    "local":   {"type": "input",  "title": "Local físico",         "sub": "Vecina barrio",       "desc": "Pasa por vitrina o llega derivada", "stack": "Boca a boca", "owner": "Anto / Rommina"},
+    "ig":      {"type": "input",  "title": "Instagram + Google Maps", "sub": "Joven profesional", "desc": "Ve feed, lee reseñas, reserva online", "stack": "IG · Google Ads", "owner": "Anto"},
+    "wa":      {"type": "input",  "title": "WhatsApp",             "sub": "Novias · referidas",  "desc": "Llega por contacto directo · pack pre-evento", "stack": "WhatsApp Business", "owner": "Anto"},
+    "agenda":  {"type": "process","title": "Agenda online 24/7",   "sub": "Fresha · Agendapro",  "desc": "Reserva sola, recordatorio auto 24h+2h", "stack": "Fresha Pro", "owner": "Sistema"},
+    "diag":    {"type": "process","title": "Recepción + diagnóstico", "sub": "Trato cara a cara","desc": "Anto recibe · evalúa piel/necesidad", "stack": "Protocolo Rommina", "owner": "Anto"},
+    "sesion":  {"type": "core",   "title": "Sesión en cabina",     "sub": "45-90 min",           "desc": "Ejecución del servicio contratado", "stack": "Equipos profesionales", "owner": "Anto"},
+    "venta":   {"type": "output", "title": "Cobro",                "sub": "Webpay · cash",       "desc": "Pago con tarjeta o transfer · boleta", "stack": "Webpay · MercadoPago", "owner": "Sistema"},
+    "up":      {"type": "output", "title": "Upsell producto",      "sub": "Reventa cosmética",   "desc": "Recomendación producto para casa", "stack": "Catálogo profesional", "owner": "Anto"},
+    "fideli":  {"type": "output", "title": "Reagenda + post-venta","sub": "Retención",           "desc": "Reagenda próxima · WhatsApp 24h después", "stack": "CRM ligero", "owner": "Anto"},
+    "anto":    {"type": "asset",  "title": "Anto + know-how",      "sub": "Recurso crítico",     "desc": "Capacitación cosmetología avanzada", "stack": "SENCE certificada", "owner": "Antonella"},
+    "equipo":  {"type": "asset",  "title": "Equipos profesionales","sub": "Inversiones $1.4M",   "desc": "Camilla · autoclave · radiofrecuencia", "stack": "Activos fijos", "owner": "Sercotec"},
+    "rommi":   {"type": "asset",  "title": "Red Rommina",          "sub": "Alianza mentora",     "desc": "Proveedores · clientela · backup operativo", "stack": "6+ años validados", "owner": "Rommina"}
+  },
+  "connections": [
+    {"from": "local",  "to": "diag",   "label": "Walk-in"},
+    {"from": "ig",     "to": "agenda", "label": "Reserva digital"},
+    {"from": "wa",     "to": "agenda", "label": "Reserva chat"},
+    {"from": "agenda", "to": "diag",   "label": "Llega cliente"},
+    {"from": "diag",   "to": "sesion", "label": "Ejecuta"},
+    {"from": "sesion", "to": "venta",  "label": "Cobra"},
+    {"from": "sesion", "to": "up",     "label": "Recomienda"},
+    {"from": "venta",  "to": "fideli", "label": "Reagenda"},
+    {"from": "up",     "to": "fideli", "label": "Cierra ciclo"},
+    {"from": "anto",   "to": "sesion", "label": "Aporta know-how"},
+    {"from": "equipo", "to": "sesion", "label": "Habilita servicios"},
+    {"from": "rommi",  "to": "up",     "label": "Proveedor productos"}
   ]
 }

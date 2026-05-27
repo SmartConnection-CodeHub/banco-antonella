@@ -129,20 +129,7 @@
   66%      { border-radius: 40% 60% 60% 40% / 70% 30% 70% 30%; transform: rotate(120deg) scale(.95); }
 }
 
-/* ─── 8 · SPOTLIGHT rosa cursor (desktop) ─── */
-@media (hover: hover) and (pointer: fine) {
-  body { position: relative; }
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 9999;
-    background: radial-gradient(circle 250px at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(232,165,184,.10), transparent 60%);
-    transition: background .15s ease-out;
-    mix-blend-mode: multiply;
-  }
-}
+/* ─── 8 · SPOTLIGHT rosa cursor · DESACTIVADO (distrae al leer) ─── */
 
 /* ─── 9 · POWDER BURST click ─── */
 .anto-burst {
@@ -179,29 +166,11 @@
   }
 }
 
-/* ─── 12 · AURORA ROSA BOREAL behind hero ─── */
-.hero::after {
-  content: '';
-  position: absolute !important;
-  inset: 0 !important;
-  z-index: 0 !important;
-  pointer-events: none !important;
-  background: conic-gradient(from 0deg at 50% 50%,
-    rgba(232,165,184,.15),
-    rgba(244,181,164,.12),
-    rgba(196,154,58,.10),
-    rgba(184,212,194,.08),
-    rgba(232,165,184,.15));
-  animation: anto-aurora 60s linear infinite;
-  filter: blur(60px);
-  opacity: .7;
-}
-@keyframes anto-aurora {
-  to { transform: rotate(360deg); }
-}
+/* ─── 12 · AURORA ROSA BOREAL · DESACTIVADO (conflicto con #2 mesh) ─── */
 
-/* ─── 13 · FLOATING SPARKLES ✦ ─── */
-.anto-sparkles {
+/* ─── 13 · FLOATING SPARKLES · DESACTIVADO (se confunden con polvo pantalla) ─── */
+.anto-sparkles { display: none; }
+.anto-sparkles-disabled {
   position: fixed;
   inset: 0;
   pointer-events: none;
@@ -254,7 +223,7 @@
 }
 
 /* ─── 15 · HAMBURGER MORPH ROSA (override del kit) ─── */
-#smc-nav-trigger, .smc-nav-trigger, [class*="nav-trigger"] {
+#smc-nav-toggle, .smc-nav-toggle, [class*="nav-trigger"] {
   background: linear-gradient(135deg, #E8A5B8, #C2728F) !important;
   border: 2px solid #C2728F !important;
   box-shadow: 0 6px 20px rgba(194,114,143,.35), 0 0 0 0 rgba(232,165,184,.4) !important;

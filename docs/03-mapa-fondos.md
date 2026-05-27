@@ -16,8 +16,21 @@ next: 04-clientes.html
 
 RADAR escaneó las convocatorias activas y futuras compatibles con el perfil Antonella: **mujer · entre 18 y 65 años · sin empresa formal aún · primera iniciativa · sector servicios estética / belleza · región Valparaíso**. Resultado: **8 fondos relevantes** · combinables en stack si se coordinan con cuidado.
 
-> [!heatmap] fondos-heatmap
-> Cada fondo se evalúa en dos ejes: **monto disponible** vs **urgencia / ventana de postulación**. El color marca compatibilidad con DS19.
+## Tabla comparativa · 8 fondos × 5 criterios
+
+| Fondo | Monto | Urgencia | Compat DS19 | Perfil Anto | Rapidez |
+|-------|-------|----------|-------------|-------------|---------|
+| 🟢 **Capital Abeja** · Sercotec      | $3.5 M     | Mar 2027 ⚠️       | 🟢 Capital      | 🟢 Mujer ideal      | 8 sem eval |
+| 🟢 **Capital Semilla** · Sercotec    | $3.5 M     | Q3-Q4 2026        | 🟢 Capital      | 🟢 Sirve igual      | 8 sem eval |
+| 🟢 **SENCE Capacitación**            | $500 K     | 🔥 Abierta        | 🟢 Ninguno      | 🟢 Perfecto         | 1-2 sem |
+| 🔴 **FOSIS Yo Emprendo**             | $1.1 M     | Mar 2027          | 🟡 Si baja RSH  | 🔴 No califica      | 10 sem |
+| 🟡 **BancoEstado · CrediMujer**      | $5 M deuda | Cualquier mes     | 🟡 Deuda alerta | 🟢 FOGAPE 80%       | 2-3 sem |
+| 🟡 **ProChile Mujer Exp.**           | $5-15 M    | Año 2             | 🟢 Capital      | 🟡 Requiere export  | Largo plazo |
+| 🟢 **CORFO Mujer**                   | $8 M       | Q2/Q4 variable    | 🟢 Capital      | 🟡 Requiere SpA     | 12 sem |
+| 🟢 **Rebate SENCE (IDPC)**           | 1 % IDPC   | Anual             | 🟢 Ninguno      | 🟢 Al contratar     | Anual |
+
+**Leyenda**: 🟢 óptimo · 🟡 aceptable · 🔴 evitar / no aplica
+
 
 ## Los 8 fondos detallados
 

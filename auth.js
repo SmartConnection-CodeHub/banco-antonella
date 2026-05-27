@@ -27,15 +27,15 @@
       #smc-gate * { box-sizing: border-box; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
       #smc-gate {
         position: fixed; inset: 0; z-index: 99999;
-        background: #0A0E1A;
-        background-image: radial-gradient(ellipse at top left, rgba(0,193,193,0.08) 0%, transparent 50%),
-                          radial-gradient(ellipse at bottom right, rgba(124,58,237,0.05) 0%, transparent 50%);
+        background: linear-gradient(135deg, #FDF4F7 0%, #FAF3E7 50%, #F9E5EC 100%);
+        background-image: radial-gradient(ellipse at top left, rgba(232,165,184,.35) 0%, transparent 50%),
+                          radial-gradient(ellipse at bottom right, rgba(196,154,58,.20) 0%, transparent 50%);
         display: flex; align-items: center; justify-content: center;
         animation: smc-fadein .5s ease;
       }
       .smc-card {
-        background: rgba(15, 23, 42, 0.6);
-        border: 1px solid rgba(0, 193, 193, 0.2);
+        background: rgba(255, 255, 255, 0.65);
+        border: 1px solid rgba(194, 114, 143, 0.2);
         border-radius: 24px;
         padding: 64px 80px;
         max-width: 560px; width: 90%;
@@ -46,18 +46,18 @@
         display: flex; align-items: center; justify-content: center;
         gap: 16px; margin-bottom: 56px;
       }
-      .smc-logo svg { filter: drop-shadow(0 0 16px rgba(0,193,193,0.4)); }
+      .smc-logo svg { filter: drop-shadow(0 0 16px rgba(194,114,143,0.4)); }
       .smc-brand {
         font-size: 32px; font-weight: 800; letter-spacing: 4px;
-        color: white;
+        color: #1B2F4E;
       }
-      .smc-brand span { color: #00C1C1; }
+      .smc-brand span { color: #C2728F; }
       .smc-title {
-        font-size: 28px; font-weight: 800; color: white;
+        font-size: 28px; font-weight: 800; color: #1B2F4E;
         margin: 0 0 8px;
       }
       .smc-sub {
-        font-size: 14px; color: rgba(255,255,255,0.45);
+        font-size: 14px; color: rgba(27, 47, 78, 0.55);
         margin: 0 0 40px; font-weight: 400;
       }
       .smc-boxes {
@@ -66,20 +66,20 @@
       }
       .smc-box {
         width: 72px; height: 80px;
-        background: rgba(15, 23, 42, 0.5);
+        background: rgba(255, 255, 255, 0.85);
         border: 2px solid rgba(255, 255, 255, 0.08);
         border-radius: 14px;
         font-size: 32px; font-weight: 700;
-        color: white; text-align: center;
+        color: #1B2F4E; text-align: center;
         outline: none; transition: all .15s ease;
         font-family: 'JetBrains Mono', 'SF Mono', monospace;
       }
       .smc-box:focus, .smc-box.active {
-        border-color: #00C1C1;
-        background: rgba(0, 193, 193, 0.05);
-        box-shadow: 0 0 24px rgba(0, 193, 193, 0.3), inset 0 0 16px rgba(0, 193, 193, 0.05);
+        border-color: #C2728F;
+        background: rgba(194, 114, 143, 0.05);
+        box-shadow: 0 0 24px rgba(194, 114, 143, 0.3), inset 0 0 16px rgba(194, 114, 143, 0.05);
       }
-      .smc-box.filled { border-color: rgba(0, 193, 193, 0.4); }
+      .smc-box.filled { border-color: rgba(194, 114, 143, 0.4); }
       .smc-err {
         height: 20px; color: #F87171; font-size: 12px;
         font-weight: 500; letter-spacing: 0.5px;
@@ -88,7 +88,7 @@
       .smc-boxes.error .smc-box { border-color: rgba(239, 68, 68, 0.5); }
       .smc-hint {
         margin-top: 32px; font-size: 11px;
-        color: rgba(255,255,255,0.25);
+        color: rgba(194, 114, 143, 0.55);
         letter-spacing: 2px; text-transform: uppercase;
       }
     `;
@@ -99,8 +99,8 @@
         <div class="smc-card">
           <div class="smc-logo">
             <svg width="42" height="42" viewBox="0 0 64 64" fill="none">
-              <path d="M48 36c0-7.732-6.268-14-14-14-6.83 0-12.515 4.886-13.764 11.353C16.18 34.078 13 37.668 13 42c0 4.97 4.03 9 9 9h24c4.418 0 8-3.582 8-8 0-3.473-2.213-6.43-5.305-7.534" stroke="#00C1C1" stroke-width="3" stroke-linecap="round"/>
-              <path d="M26 42l5 5 9-11" stroke="#00C1C1" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M48 36c0-7.732-6.268-14-14-14-6.83 0-12.515 4.886-13.764 11.353C16.18 34.078 13 37.668 13 42c0 4.97 4.03 9 9 9h24c4.418 0 8-3.582 8-8 0-3.473-2.213-6.43-5.305-7.534" stroke="#C2728F" stroke-width="3" stroke-linecap="round"/>
+              <path d="M26 42l5 5 9-11" stroke="#C2728F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
             <div class="smc-brand">SMART<span>CONNECTION</span></div>
           </div>

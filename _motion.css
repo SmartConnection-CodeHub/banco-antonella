@@ -1,0 +1,284 @@
+/* ============================================================
+   Banco Antonella · Motion Signature · 15 efectos cosmética rosa
+   Mobile-first · respeta prefers-reduced-motion
+   ============================================================ */
+
+/* ─── 1 · GRADIENT SHIMMER ROSA-CORAL en hero title ─── */
+.hero h1 {
+  background: linear-gradient(110deg, var(--navy, #1B2F4E) 30%, #C2728F 50%, var(--navy, #1B2F4E) 70%);
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: anto-shimmer 5s linear infinite;
+}
+.hero h1 em { color: #C2728F !important; -webkit-text-fill-color: #C2728F; }
+.hero h1 strong { color: #C49A3A !important; -webkit-text-fill-color: #C49A3A; }
+@keyframes anto-shimmer {
+  0% { background-position: 250% 0; }
+  100% { background-position: -250% 0; }
+}
+
+/* ─── 2 · MESH GRADIENT DRIFT en hero (blobs rotando lento) ─── */
+.hero::before {
+  content: '';
+  position: absolute !important;
+  inset: -10% !important;
+  z-index: 0 !important;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 50% 40% at 20% 25%, rgba(232,165,184,.45), transparent 60%),
+    radial-gradient(ellipse 45% 35% at 80% 35%, rgba(244,181,164,.35), transparent 65%),
+    radial-gradient(ellipse 60% 50% at 50% 90%, rgba(196,154,58,.20), transparent 70%);
+  filter: blur(50px);
+  animation: anto-mesh 18s ease-in-out infinite alternate;
+}
+@keyframes anto-mesh {
+  0%   { transform: translate(0,0) scale(1) rotate(0deg); }
+  50%  { transform: translate(-30px, 20px) scale(1.1) rotate(8deg); }
+  100% { transform: translate(20px, -15px) scale(1.05) rotate(-5deg); }
+}
+
+/* ─── 3 · PETAL FLOAT · pétalos rosados cayendo ─── */
+.anto-petals {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+.anto-petals i {
+  position: absolute;
+  width: 14px; height: 14px;
+  background: radial-gradient(circle at 30% 30%, #F9E5EC, #E8A5B8);
+  border-radius: 60% 40% 70% 30% / 50% 60% 40% 50%;
+  opacity: .55;
+  animation: anto-fall linear infinite;
+}
+.anto-petals i:nth-child(1)  { left: 5%;  animation-duration: 18s; animation-delay: 0s;   transform: rotate(15deg); }
+.anto-petals i:nth-child(2)  { left: 18%; animation-duration: 22s; animation-delay: 4s;   transform: rotate(60deg); }
+.anto-petals i:nth-child(3)  { left: 32%; animation-duration: 25s; animation-delay: 9s;   transform: rotate(110deg); }
+.anto-petals i:nth-child(4)  { left: 48%; animation-duration: 19s; animation-delay: 2s;   transform: rotate(45deg); }
+.anto-petals i:nth-child(5)  { left: 62%; animation-duration: 23s; animation-delay: 7s;   transform: rotate(140deg); }
+.anto-petals i:nth-child(6)  { left: 75%; animation-duration: 21s; animation-delay: 12s;  transform: rotate(80deg); }
+.anto-petals i:nth-child(7)  { left: 88%; animation-duration: 27s; animation-delay: 5s;   transform: rotate(170deg); }
+.anto-petals i:nth-child(8)  { left: 95%; animation-duration: 20s; animation-delay: 14s;  transform: rotate(30deg); }
+.anto-petals i:nth-child(9)  { left: 10%; animation-duration: 26s; animation-delay: 16s;  transform: rotate(95deg); }
+.anto-petals i:nth-child(10) { left: 55%; animation-duration: 24s; animation-delay: 11s;  transform: rotate(120deg); }
+@keyframes anto-fall {
+  0%   { top: -10vh; opacity: 0; transform: translateX(0) rotate(0deg); }
+  10%  { opacity: .55; }
+  90%  { opacity: .35; }
+  100% { top: 110vh; transform: translateX(40px) rotate(540deg); opacity: 0; }
+}
+
+/* ─── 4 · HEARTBEAT KPI ─── */
+.kpi, .doc-card { animation: anto-heartbeat 3.5s ease-in-out infinite; }
+.kpi:nth-child(2), .doc-card:nth-child(2) { animation-delay: 0.4s; }
+.kpi:nth-child(3), .doc-card:nth-child(3) { animation-delay: 0.8s; }
+.kpi:nth-child(4), .doc-card:nth-child(4) { animation-delay: 1.2s; }
+@keyframes anto-heartbeat {
+  0%, 90%, 100% { transform: scale(1); }
+  45%, 50% { transform: scale(1.018); }
+}
+
+/* ─── 5 · GLOW HALO en hover cards ─── */
+.doc-card { transition: transform .35s cubic-bezier(.4,0,.2,1), box-shadow .35s, border-color .35s; }
+.doc-card:hover {
+  animation-play-state: paused;
+  transform: translateY(-6px) !important;
+  box-shadow: 0 20px 50px rgba(194,114,143,.30), 0 0 50px rgba(232,165,184,.25) !important;
+  border-color: #C2728F !important;
+}
+
+/* ─── 6 · LIPSTICK UNDERLINE reveal en títulos bloque ─── */
+.block-title { position: relative; }
+.block-title::after {
+  content: '';
+  position: absolute;
+  left: 0; bottom: -8px;
+  width: 60px; height: 3px;
+  background: linear-gradient(90deg, #C2728F, #E8A5B8 50%, #C49A3A);
+  border-radius: 99px;
+  transform: scaleX(0);
+  transform-origin: left;
+  animation: anto-underline 1.2s cubic-bezier(.4,0,.2,1) forwards;
+}
+.block-section:nth-child(2) .block-title::after { animation-delay: .15s; }
+.block-section:nth-child(3) .block-title::after { animation-delay: .30s; }
+.block-section:nth-child(4) .block-title::after { animation-delay: .45s; }
+@keyframes anto-underline {
+  to { transform: scaleX(1); }
+}
+
+/* ─── 7 · LIQUID BLOB MORPH en footer ─── */
+.footer { position: relative; overflow: hidden; }
+.footer::before {
+  content: '';
+  position: absolute;
+  top: -40px; right: -60px;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle at 30% 30%, rgba(232,165,184,.35), rgba(196,154,58,.15));
+  filter: blur(20px);
+  animation: anto-blob 12s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes anto-blob {
+  0%, 100% { border-radius: 50% 60% 70% 40% / 60% 40% 60% 50%; transform: rotate(0deg) scale(1); }
+  33%      { border-radius: 70% 30% 50% 50% / 40% 60% 40% 60%; transform: rotate(60deg) scale(1.1); }
+  66%      { border-radius: 40% 60% 60% 40% / 70% 30% 70% 30%; transform: rotate(120deg) scale(.95); }
+}
+
+/* ─── 8 · SPOTLIGHT rosa cursor (desktop) ─── */
+@media (hover: hover) and (pointer: fine) {
+  body { position: relative; }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    background: radial-gradient(circle 250px at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(232,165,184,.10), transparent 60%);
+    transition: background .15s ease-out;
+    mix-blend-mode: multiply;
+  }
+}
+
+/* ─── 9 · POWDER BURST click ─── */
+.anto-burst {
+  position: fixed;
+  pointer-events: none;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #F9E5EC, #E8A5B8);
+  animation: anto-puff 700ms ease-out forwards;
+  z-index: 99999;
+}
+@keyframes anto-puff {
+  0%   { transform: scale(0) translate(0,0); opacity: 1; }
+  100% { transform: scale(2) translate(var(--dx,0), var(--dy,0)); opacity: 0; }
+}
+
+/* ─── 10 · SVG stroke draw íconos ─── */
+.hero-eyebrow::before {
+  display: inline-block;
+  animation: anto-spin 8s linear infinite;
+}
+@keyframes anto-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ─── 11 · TILT 3D parallax suave (desktop) ─── */
+@media (hover: hover) and (pointer: fine) {
+  .doc-card {
+    transform-style: preserve-3d;
+    perspective: 1000px;
+  }
+  .doc-card:hover {
+    transform: translateY(-6px) rotateX(2deg) rotateY(-2deg) !important;
+  }
+}
+
+/* ─── 12 · AURORA ROSA BOREAL behind hero ─── */
+.hero::after {
+  content: '';
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 0 !important;
+  pointer-events: none !important;
+  background: conic-gradient(from 0deg at 50% 50%,
+    rgba(232,165,184,.15),
+    rgba(244,181,164,.12),
+    rgba(196,154,58,.10),
+    rgba(184,212,194,.08),
+    rgba(232,165,184,.15));
+  animation: anto-aurora 60s linear infinite;
+  filter: blur(60px);
+  opacity: .7;
+}
+@keyframes anto-aurora {
+  to { transform: rotate(360deg); }
+}
+
+/* ─── 13 · FLOATING SPARKLES ✦ ─── */
+.anto-sparkles {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  overflow: hidden;
+}
+.anto-sparkles span {
+  position: absolute;
+  width: 3px; height: 3px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow:
+    0 0 4px 1px rgba(232,165,184,.9),
+    0 0 8px 2px rgba(196,154,58,.4);
+  animation: anto-twinkle 4s ease-in-out infinite;
+}
+.anto-sparkles span:nth-child(1)  { top: 12%; left:  8%; animation-delay: 0s; }
+.anto-sparkles span:nth-child(2)  { top: 25%; left: 88%; animation-delay: 1.2s; }
+.anto-sparkles span:nth-child(3)  { top: 45%; left: 15%; animation-delay: 2.4s; }
+.anto-sparkles span:nth-child(4)  { top: 60%; left: 75%; animation-delay: .6s; }
+.anto-sparkles span:nth-child(5)  { top: 75%; left: 30%; animation-delay: 1.8s; }
+.anto-sparkles span:nth-child(6)  { top: 18%; left: 55%; animation-delay: 3s; }
+.anto-sparkles span:nth-child(7)  { top: 88%; left: 62%; animation-delay: .9s; }
+.anto-sparkles span:nth-child(8)  { top: 35%; left: 95%; animation-delay: 2.1s; }
+.anto-sparkles span:nth-child(9)  { top: 50%; left:  3%; animation-delay: 3.3s; }
+.anto-sparkles span:nth-child(10) { top: 8%; left: 70%; animation-delay: 1.5s; }
+@keyframes anto-twinkle {
+  0%, 100% { opacity: 0; transform: scale(0.5); }
+  50%      { opacity: 1; transform: scale(1.2); }
+}
+
+/* ─── 14 · RIBBON WAVE UNDERLINE en hero subtitle ─── */
+.hero-eyebrow {
+  position: relative;
+  overflow: visible;
+}
+.hero-eyebrow::after {
+  content: '';
+  position: absolute;
+  left: -10px; right: -10px;
+  bottom: -6px;
+  height: 4px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 4' preserveAspectRatio='none'%3E%3Cpath d='M0 2 Q 10 0 20 2 T 40 2' fill='none' stroke='%23C2728F' stroke-width='1.5'/%3E%3C/svg%3E") repeat-x;
+  background-size: 40px 4px;
+  opacity: 0;
+  animation: anto-ribbon 2s ease-out .6s forwards;
+}
+@keyframes anto-ribbon {
+  to { opacity: .7; }
+}
+
+/* ─── 15 · HAMBURGER MORPH ROSA (override del kit) ─── */
+#smc-nav-trigger, .smc-nav-trigger, [class*="nav-trigger"] {
+  background: linear-gradient(135deg, #E8A5B8, #C2728F) !important;
+  border: 2px solid #C2728F !important;
+  box-shadow: 0 6px 20px rgba(194,114,143,.35), 0 0 0 0 rgba(232,165,184,.4) !important;
+  animation: anto-hamburger-pulse 2.5s ease-in-out infinite;
+  transition: transform .35s cubic-bezier(.4,0,.2,1), box-shadow .35s !important;
+}
+#smc-nav-trigger:hover, .smc-nav-trigger:hover, [class*="nav-trigger"]:hover {
+  transform: scale(1.1) rotate(8deg) !important;
+  box-shadow: 0 10px 30px rgba(194,114,143,.50), 0 0 0 8px rgba(232,165,184,.20) !important;
+}
+#smc-nav-trigger span, .smc-nav-trigger span, [class*="nav-trigger"] span {
+  background: #fff !important;
+}
+@keyframes anto-hamburger-pulse {
+  0%, 100% { box-shadow: 0 6px 20px rgba(194,114,143,.35), 0 0 0 0 rgba(232,165,184,.4); }
+  50%      { box-shadow: 0 6px 20px rgba(194,114,143,.45), 0 0 0 12px rgba(232,165,184,0); }
+}
+
+/* ============ Respect prefers-reduced-motion ============ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .anto-petals, .anto-sparkles, body::before { display: none; }
+}

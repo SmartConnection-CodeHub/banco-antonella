@@ -142,7 +142,8 @@
   trigger.setAttribute('aria-label', 'Abrir simulador');
   trigger.innerHTML = `
     <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M5 3v18M5 7h7a3 3 0 0 1 0 6H5M5 14h9a3 3 0 0 1 0 6H5"/>
+      <path d="M12 20h9"/>
+      <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
     </svg>
   `;
   document.body.appendChild(trigger);
@@ -211,13 +212,113 @@
       msgEl.textContent = 'Tus cambios se guardan solos · click 💾 Guardar para confirmar';
     }
   }
-  function saveSnapshot() {
-    // El localStorage ya tiene state · solo le ponemos timestamp visible
-    const now = Date.now();
-    localStorage.setItem(STORAGE_KEY + ':lastSave', String(now));
-    updateSaveStatus();
-    showToast('✓ Guardado · tus números están seguros');
+  // ─── Guardado en la nube (jsonblob.com · sin auth · cross-device) ───
+  // Anonymous gists deprecados desde 2018 · usamos JSONBlob como reemplazo equivalente.
+  const BLOB_API = 'https://jsonblob.com/api/jsonBlob';
+
+  async function saveSnapshot() {
+    const btn = document.getElementById('sim-save');
+    const orig = btn.textContent;
+    btn.textContent = '☁️ Guardando...';
+    btn.disabled = true;
+
+    const state = getState();
+    const blobId = localStorage.getItem(STORAGE_KEY + ':blobId');
+    const payload = {
+      banco: 'antonella',
+      updatedAt: new Date().toISOString(),
+      simulator: state
+    };
+
+    try {
+      let id = blobId;
+      if (id) {
+        // PUT · actualizar blob existente
+        const r = await fetch(BLOB_API + '/' + id, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (!r.ok) throw new Error('PUT failed ' + r.status);
+      } else {
+        // POST · crear blob nuevo
+        const r = await fetch(BLOB_API, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (!r.ok) throw new Error('POST failed ' + r.status);
+        const loc = r.headers.get('Location') || '';
+        id = loc.split('/').pop();
+        if (!id) throw new Error('Sin ID');
+        localStorage.setItem(STORAGE_KEY + ':blobId', id);
+      }
+      localStorage.setItem(STORAGE_KEY + ':lastSave', String(Date.now()));
+      const link = window.location.origin + window.location.pathname.replace('index.html', '') + 'index.html?id=' + id;
+      showSaveModal(link);
+      updateSaveStatus();
+    } catch (e) {
+      console.error('Save error', e);
+      // Fallback: localStorage funciona aunque no haya internet
+      localStorage.setItem(STORAGE_KEY + ':lastSave', String(Date.now()));
+      updateSaveStatus();
+      showToast('⚠️ Guardado solo en este navegador (sin internet?)');
+    }
+
+    btn.textContent = orig;
+    btn.disabled = false;
   }
+
+  function showSaveModal(link) {
+    const m = document.createElement('div');
+    m.style.cssText = 'position:fixed;inset:0;z-index:100000;background:rgba(15,31,56,.75);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;animation:sim-fade-in .25s ease;';
+    m.innerHTML = `
+      <div style="max-width:520px;width:90%;background:linear-gradient(180deg,#14253E 0%,#0F1F38 100%);border-radius:18px;padding:30px 32px;box-shadow:0 25px 80px rgba(0,0,0,.5);color:#fff;font-family:-apple-system,sans-serif;">
+        <div style="font:700 11px var(--font);letter-spacing:.16em;color:#7AD27C;text-transform:uppercase;margin-bottom:8px;">✓ Guardado en la nube</div>
+        <h3 style="font:800 22px var(--font);margin:0 0 8px;color:#fff;">Tus números están seguros</h3>
+        <p style="font:400 13px var(--font);color:rgba(255,255,255,.7);margin:0 0 18px;line-height:1.5;">Copia este link y pegalo en tus notas o WhatsApp. Cuando abras el link desde cualquier dispositivo · vas a ver tus números exactamente como los dejaste.</p>
+        <div style="display:flex;gap:6px;background:rgba(0,0,0,.35);border:1px solid rgba(196,154,58,.30);border-radius:10px;padding:10px 14px;margin-bottom:16px;align-items:center;">
+          <input id="sim-link-input" value="${link}" readonly style="flex:1;background:transparent;border:0;color:#F0CB6E;font:600 12px 'JetBrains Mono',monospace;outline:none;" />
+          <button id="sim-link-copy" style="appearance:none;border:1px solid rgba(196,154,58,.45);background:rgba(196,154,58,.20);color:#F0CB6E;padding:6px 12px;border-radius:8px;font:700 10px var(--font);letter-spacing:.06em;text-transform:uppercase;cursor:pointer;">Copiar</button>
+        </div>
+        <div style="display:flex;gap:8px;justify-content:flex-end;">
+          <button id="sim-modal-close" style="appearance:none;border:1px solid rgba(255,255,255,.15);background:transparent;color:#fff;padding:9px 18px;border-radius:8px;font:700 11px var(--font);letter-spacing:.06em;text-transform:uppercase;cursor:pointer;">Cerrar</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(m);
+    m.querySelector('#sim-link-copy').onclick = () => {
+      const inp = m.querySelector('#sim-link-input');
+      inp.select();
+      navigator.clipboard?.writeText(link).then(() => {
+        m.querySelector('#sim-link-copy').textContent = '✓ Copiado';
+        setTimeout(() => m.remove(), 1000);
+      });
+    };
+    m.querySelector('#sim-modal-close').onclick = () => m.remove();
+    m.addEventListener('click', (e) => { if (e.target === m) m.remove(); });
+  }
+
+  // ─── Cargar estado desde URL (si llega con ?id=ABC) ───
+  async function loadFromURL() {
+    const params = new URLSearchParams(location.search);
+    const id = params.get('id');
+    if (!id) return;
+    try {
+      const r = await fetch(BLOB_API + '/' + id, { headers: { 'Accept': 'application/json' } });
+      if (!r.ok) throw new Error('GET failed ' + r.status);
+      const data = await r.json();
+      if (data && data.simulator) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data.simulator));
+        localStorage.setItem(STORAGE_KEY + ':blobId', id);
+        localStorage.setItem(STORAGE_KEY + ':lastSave', String(Date.now()));
+        showToast('☁️ Cargado desde la nube · ' + (data.updatedAt ? new Date(data.updatedAt).toLocaleDateString('es-CL') : 'tus números'));
+      }
+    } catch (e) {
+      console.warn('Load from URL failed', e);
+    }
+  }
+  loadFromURL();
   function closeDrawer() {
     document.removeEventListener('keydown', escClose);
     if (backdrop) { backdrop.remove(); backdrop = null; }
@@ -226,65 +327,15 @@
   function escClose(e) { if (e.key === 'Escape') closeDrawer(); }
   trigger.addEventListener('click', openDrawer);
 
-  // ─── Acciones toolbar (humanizadas) ───
+  // ─── Acciones toolbar ───
   function getState() {
     try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch (e) { return {}; }
-  }
-
-  // Imprimir / Guardar PDF · abre print dialog del iframe (todos saben "guardar como PDF")
-  function printPDF() {
-    const iframe = document.getElementById('sim-iframe');
-    if (!iframe || !iframe.contentWindow) return showToast('⚠️ Abrí primero el simulador');
-    try {
-      iframe.contentWindow.focus();
-      iframe.contentWindow.print();
-      showToast('🖨️ Elegí "Guardar como PDF" en el diálogo');
-    } catch (e) {
-      window.location.href = '11-simulador.html';
-    }
-  }
-
-  // Compartir por WhatsApp · arma un resumen legible de los números
-  function shareWhatsApp() {
-    const s = getState();
-    let resumen = `*Mi proyecto Centro Estética*\n_Banco Antonella · simulador_\n\n`;
-
-    // Servicios y volumen
-    if (s.serv) {
-      const totalVis = Object.values(s.serv).reduce((a, v) => a + (v.v || 0), 0);
-      const totalFact = Object.values(s.serv).reduce((a, v) => a + ((v.v || 0) * (v.p || 0)), 0);
-      if (totalFact > 0) {
-        resumen += `💅 *Facturación mensual estimada:*\n$${totalFact.toLocaleString('es-CL')} CLP\n`;
-        resumen += `📊 Visitas/mes: ${totalVis}\n\n`;
-      }
-    }
-
-    // Stack de fondos
-    if (s.stackChecked) {
-      const fondos = {abeja: 'Capital Abeja $3.5M', semilla: 'Capital Semilla $3.5M', sence: 'SENCE $500K', corfo: 'CORFO Mujer $8M', prochile: 'ProChile $5M', fosis: 'FOSIS $1.1M'};
-      const elegidos = Object.keys(s.stackChecked).filter(k => s.stackChecked[k] && fondos[k]).map(k => '• ' + fondos[k]);
-      if (elegidos.length > 0) {
-        resumen += `🎯 *Fondos que voy a postular:*\n${elegidos.join('\n')}\n\n`;
-      }
-    }
-
-    // Proyección
-    if (s.projValues) {
-      const fi = s.projValues.fact_inicial || 0;
-      const fr = s.projValues.fact_regimen || 0;
-      if (fr) resumen += `📈 *Meta facturación mes 6:* $${(+fr).toLocaleString('es-CL')}\n`;
-    }
-
-    resumen += `\n🔗 Banco completo: ${window.location.origin + window.location.pathname.replace('index.html','')}`;
-
-    const url = `https://wa.me/?text=${encodeURIComponent(resumen)}`;
-    window.open(url, '_blank');
-    showToast('📱 Abriendo WhatsApp...');
   }
 
   function resetSim() {
     if (!confirm('¿Volver a los valores iniciales del simulador?\n\nTus cambios actuales se perderán.')) return;
     localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(STORAGE_KEY + ':blobId');
     const iframe = document.getElementById('sim-iframe');
     if (iframe) iframe.src = iframe.src;
     showToast('↺ Valores iniciales restaurados');

@@ -95,7 +95,7 @@
     #smc-nav-toggle.open::before,
     #smc-nav-toggle.open::after { opacity: 0; }
 
-    #smc-nav-toggle svg { width: 22px; height: 22px; position: relative; z-index: 1; }
+    #smc-nav-toggle svg { width: 22px; height: 22px; position: relative; z-index: 1; fill: none; stroke: #fff; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
     #smc-nav-toggle .bar { stroke: #C2728F; stroke-width: 2.5; stroke-linecap: round; transition: all .25s ease; }
     #smc-nav-toggle:hover .bar { stroke: white; }
     #smc-nav-toggle.open .bar-1 { transform: rotate(45deg) translate(4px, 4px); }
@@ -337,9 +337,9 @@
     btn.setAttribute('aria-label', 'Navegación');
     btn.innerHTML = `
       <svg viewBox="0 0 24 24" fill="none">
-        <path class="bar bar-1" d="M4 7h16"/>
-        <path class="bar bar-2" d="M4 12h16"/>
-        <path class="bar bar-3" d="M4 17h16"/>
+        <path class="bar bar-1" d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+        <path class="bar bar-2" d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+        <path class="bar bar-3" d="M9 7h7M9 11h5"/>
       </svg>
     `;
     document.body.appendChild(btn);

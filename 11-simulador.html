@@ -100,14 +100,67 @@
       el.textContent='';
     }
   }
+  const BLOB_API='https://jsonblob.com/api/jsonBlob';
+  async function loadFromURL(){
+    const id=new URLSearchParams(location.search).get('id');
+    if(!id) return;
+    try{
+      const r=await fetch(BLOB_API+'/'+id,{headers:{'Accept':'application/json'}});
+      if(!r.ok) return;
+      const d=await r.json();
+      if(d&&d.simulator){
+        localStorage.setItem(KEY,JSON.stringify(d.simulator));
+        localStorage.setItem(KEY+':blobId',id);
+        localStorage.setItem(KEY+':lastSave',String(Date.now()));
+        show('☁️ Cargado desde la nube');
+        setTimeout(()=>location.reload(),800);
+      }
+    }catch(e){console.warn(e);}
+  }
+  loadFromURL();
+  async function saveCloud(){
+    const btn=document.getElementById('sim-save-main');
+    const orig=btn.textContent;btn.textContent='☁️ Guardando...';btn.disabled=true;
+    const state=JSON.parse(localStorage.getItem(KEY)||'{}');
+    const id=localStorage.getItem(KEY+':blobId');
+    const payload={banco:'antonella',updatedAt:new Date().toISOString(),simulator:state};
+    try{
+      let bid=id;
+      if(bid){
+        const r=await fetch(BLOB_API+'/'+bid,{method:'PUT',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(payload)});
+        if(!r.ok) throw new Error('PUT '+r.status);
+      }else{
+        const r=await fetch(BLOB_API,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(payload)});
+        if(!r.ok) throw new Error('POST '+r.status);
+        bid=(r.headers.get('Location')||'').split('/').pop();
+        if(!bid) throw new Error('Sin ID');
+        localStorage.setItem(KEY+':blobId',bid);
+      }
+      localStorage.setItem(KEY+':lastSave',String(Date.now()));
+      updateStatus();
+      const link=window.location.origin+window.location.pathname.replace('11-simulador.html','')+'index.html?id='+bid;
+      showSaveModal(link);
+    }catch(e){
+      console.error(e);
+      localStorage.setItem(KEY+':lastSave',String(Date.now()));
+      updateStatus();
+      show('⚠️ Guardado solo en este navegador');
+    }
+    btn.textContent=orig;btn.disabled=false;
+  }
+  function showSaveModal(link){
+    const m=document.createElement('div');
+    m.style.cssText='position:fixed;inset:0;z-index:100000;background:rgba(15,31,56,.75);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;';
+    m.innerHTML=`<div style="max-width:520px;width:90%;background:linear-gradient(180deg,#14253E 0%,#0F1F38 100%);border-radius:18px;padding:30px 32px;box-shadow:0 25px 80px rgba(0,0,0,.5);color:#fff;"><div style="font:700 11px var(--font);letter-spacing:.16em;color:#7AD27C;text-transform:uppercase;margin-bottom:8px;">✓ Guardado en la nube</div><h3 style="font:800 22px var(--font);margin:0 0 8px;color:#fff;">Tus números están seguros</h3><p style="font:400 13px var(--font);color:rgba(255,255,255,.7);margin:0 0 18px;line-height:1.5;">Copia este link y pegalo en tus notas o WhatsApp. Al abrirlo desde cualquier dispositivo vas a ver tus números como los dejaste.</p><div style="display:flex;gap:6px;background:rgba(0,0,0,.35);border:1px solid rgba(196,154,58,.30);border-radius:10px;padding:10px 14px;margin-bottom:16px;align-items:center;"><input id="lm-i" value="${link}" readonly style="flex:1;background:transparent;border:0;color:#F0CB6E;font:600 12px 'JetBrains Mono',monospace;outline:none;" /><button id="lm-c" style="appearance:none;border:1px solid rgba(196,154,58,.45);background:rgba(196,154,58,.20);color:#F0CB6E;padding:6px 12px;border-radius:8px;font:700 10px var(--font);letter-spacing:.06em;text-transform:uppercase;cursor:pointer;">Copiar</button></div><div style="display:flex;gap:8px;justify-content:flex-end;"><button id="lm-x" style="appearance:none;border:1px solid rgba(255,255,255,.15);background:transparent;color:#fff;padding:9px 18px;border-radius:8px;font:700 11px var(--font);letter-spacing:.06em;text-transform:uppercase;cursor:pointer;">Cerrar</button></div></div>`;
+    document.body.appendChild(m);
+    m.querySelector('#lm-c').onclick=()=>{m.querySelector('#lm-i').select();navigator.clipboard.writeText(link).then(()=>{m.querySelector('#lm-c').textContent='✓ Copiado';setTimeout(()=>m.remove(),1000);});};
+    m.querySelector('#lm-x').onclick=()=>m.remove();
+    m.addEventListener('click',(e)=>{if(e.target===m) m.remove();});
+  }
   ready(()=>{
     updateStatus();
     setInterval(updateStatus,30000);
-    document.getElementById('sim-save-main').onclick=()=>{
-      localStorage.setItem(KEY+':lastSave',String(Date.now()));
-      updateStatus();
-      show('✓ Guardado · tus números están seguros');
-    };
+    document.getElementById('sim-save-main').onclick=saveCloud;
   });
 })();
 </script>

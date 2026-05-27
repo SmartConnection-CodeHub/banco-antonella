@@ -1,0 +1,61 @@
+{
+  "title": "Embudo documentos postulación · de fácil a difícil",
+  "stages": [
+    {
+      "id": "bloque-a",
+      "label": "Bloque A · Personales",
+      "value": 5,
+      "color": "#7AD27C",
+      "note": "Online · gratis · 1 día"
+    },
+    {
+      "id": "bloque-b",
+      "label": "Bloque B · Negocio",
+      "value": 6,
+      "color": "#A8D5A8",
+      "note": "SMC genera · 5 días"
+    },
+    {
+      "id": "bloque-c",
+      "label": "Bloque C · Local",
+      "value": 3,
+      "color": "#C49A3A",
+      "note": "3 visitas locales · 3 días"
+    },
+    {
+      "id": "bloque-d",
+      "label": "Bloque D · Cotizaciones",
+      "value": 6,
+      "color": "#D4AA4A",
+      "note": "Mailear proveedores · 5 días"
+    },
+    {
+      "id": "bloque-e",
+      "label": "Bloque E · Respaldo $",
+      "value": 3,
+      "color": "#FFA86B",
+      "note": "Banco · SII · 1 día"
+    },
+    {
+      "id": "bloque-f",
+      "label": "Bloque F · Capacitación",
+      "value": 3,
+      "color": "#FF8E5C",
+      "note": "Tutoría + CV · 1 día"
+    },
+    {
+      "id": "bloque-g",
+      "label": "Bloque G · Alianzas",
+      "value": 3,
+      "color": "#D04A3A",
+      "note": "Cartas firmadas · 2 días"
+    },
+    {
+      "id": "bloque-h",
+      "label": "Bloque H · Anexos opcionales",
+      "value": 4,
+      "color": "#A03228",
+      "note": "+8-12% puntaje extra"
+    }
+  ]
+}

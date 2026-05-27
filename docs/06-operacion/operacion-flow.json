@@ -1,0 +1,59 @@
+{
+  "title": "Flujo operativo · Centro Estética Antonella",
+  "groups": [
+    {
+      "id": "entrada",
+      "label": "Canales de entrada",
+      "color": "#C49A3A",
+      "nodes": [
+        {"id": "local",  "label": "Local físico\nvecina barrio",   "x": 5,  "y": 15},
+        {"id": "ig",     "label": "Instagram\n+ Google Maps",       "x": 5,  "y": 40},
+        {"id": "wa",     "label": "WhatsApp\nreferidas",            "x": 5,  "y": 65}
+      ]
+    },
+    {
+      "id": "core",
+      "label": "Operación cabina",
+      "color": "#6B9B7A",
+      "nodes": [
+        {"id": "agenda", "label": "Agenda online\n24/7",            "x": 38, "y": 25},
+        {"id": "diag",   "label": "Recepción\n+ diagnóstico",       "x": 38, "y": 50},
+        {"id": "sesion", "label": "Sesión\nservicio",               "x": 62, "y": 40}
+      ]
+    },
+    {
+      "id": "salida",
+      "label": "Salidas + retención",
+      "color": "#1B2F4E",
+      "nodes": [
+        {"id": "venta",  "label": "Cobro\nWebpay/cash",             "x": 88, "y": 20},
+        {"id": "up",     "label": "Upsell\nproducto",               "x": 88, "y": 45},
+        {"id": "fideli", "label": "Reagenda\n+ post-venta",         "x": 88, "y": 70}
+      ]
+    },
+    {
+      "id": "recursos",
+      "label": "Recursos clave",
+      "color": "#D04A3A",
+      "nodes": [
+        {"id": "anto",   "label": "Anto\n+ know-how",               "x": 25, "y": 85},
+        {"id": "equipo", "label": "Equipos\nprofesionales",         "x": 50, "y": 85},
+        {"id": "rommi",  "label": "Red Rommina\nproveedores",       "x": 75, "y": 85}
+      ]
+    }
+  ],
+  "edges": [
+    {"from": "local", "to": "diag"},
+    {"from": "ig", "to": "agenda"},
+    {"from": "wa", "to": "agenda"},
+    {"from": "agenda", "to": "diag"},
+    {"from": "diag", "to": "sesion"},
+    {"from": "sesion", "to": "venta"},
+    {"from": "sesion", "to": "up"},
+    {"from": "venta", "to": "fideli"},
+    {"from": "up", "to": "fideli"},
+    {"from": "anto", "to": "sesion", "style": "dashed"},
+    {"from": "equipo", "to": "sesion", "style": "dashed"},
+    {"from": "rommi", "to": "up", "style": "dashed"}
+  ]
+}

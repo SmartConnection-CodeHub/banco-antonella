@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulador · Banco Antonella</title>
+<link rel="stylesheet" href="_styles.css">
+<link rel="stylesheet" href="_diagram-kit.css">
+<style>
+  body { background: var(--smc-bg, #faf8f3); font-family: var(--font, -apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif); margin: 0; }
+  .sim-wrap { max-width: 1200px; margin: 0 auto; padding: 40px 24px 80px; }
+  .sim-hero { text-align: center; padding: 40px 0 50px; }
+  .sim-hero h1 { font-size: 48px; font-weight: 800; letter-spacing: -.03em; color: var(--smc-primary, #1B2F4E); margin: 0 0 12px; }
+  .sim-hero h1 em { color: var(--smc-accent, #C49A3A); font-style: normal; }
+  .sim-hero p { font-size: 15px; color: var(--smc-muted, #6e6e73); max-width: 640px; margin: 0 auto; line-height: 1.6; }
+  .sim-tabs { display: flex; gap: 6px; justify-content: center; margin: 30px 0; flex-wrap: wrap; }
+  .sim-tab { appearance: none; border: 1.5px solid var(--smc-border, #e8e8ed); background: #fff; padding: 10px 20px; border-radius: 99px; cursor: pointer; font: 700 12px var(--font); letter-spacing: .04em; color: var(--smc-muted); transition: all .25s; }
+  .sim-tab:hover { color: var(--smc-primary); border-color: var(--smc-accent); }
+  .sim-tab.active { background: var(--smc-primary, #1B2F4E); color: #fff; border-color: var(--smc-primary); }
+  .panel { display: none; animation: fadeIn .4s ease-out; }
+  .panel.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 20px; }
+  @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+  .card { background: #fff; border: 1px solid var(--smc-border); border-radius: 16px; padding: 24px; box-shadow: 0 2px 12px rgba(0,0,0,.04); }
+  .card h3 { font-size: 16px; font-weight: 800; color: var(--smc-primary); margin: 0 0 16px; letter-spacing: -.012em; display: flex; align-items: center; gap: 8px; }
+  .card h3 .badge { font-size: 9px; letter-spacing: .12em; text-transform: uppercase; padding: 3px 8px; border-radius: 99px; background: rgba(196,154,58,.12); color: var(--smc-accent); }
+  .input-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--smc-border-w, #f0f0f3); }
+  .input-row:last-child { border-bottom: none; }
+  .input-row label { flex: 1; font-size: 13px; color: var(--smc-text, #1d1d1f); line-height: 1.3; }
+  .input-row label small { display: block; font-size: 10px; color: var(--smc-muted); margin-top: 2px; letter-spacing: .04em; text-transform: uppercase; }
+  .input-row .currency-prefix { color: var(--smc-muted); font-size: 12px; font-weight: 600; }
+  .input-row input[type="number"] { width: 110px; padding: 8px 10px; border: 1.5px solid var(--smc-border); border-radius: 8px; font: 700 13px var(--font); color: var(--smc-primary); text-align: right; -moz-appearance: textfield; }
+  .input-row input::-webkit-outer-spin-button, .input-row input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  .input-row input:focus { outline: none; border-color: var(--smc-accent); box-shadow: 0 0 0 3px rgba(196,154,58,.15); }
+  .input-row .chip { font: 700 10px var(--font); padding: 3px 8px; border-radius: 99px; background: var(--smc-cream, #f5edd8); color: var(--smc-primary); letter-spacing: .04em; }
+  .totals { background: linear-gradient(135deg, var(--smc-primary, #1B2F4E), #2a3f5f); color: #fff; border-radius: 16px; padding: 24px; margin-top: 24px; }
+  .totals h3 { color: #fff; margin: 0 0 16px; font-size: 15px; letter-spacing: .04em; text-transform: uppercase; }
+  .total-row { display: flex; justify-content: space-between; align-items: baseline; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,.1); font-size: 13px; }
+  .total-row:last-child { border-bottom: none; }
+  .total-row .label { color: rgba(255,255,255,.7); }
+  .total-row .value { font: 800 16px var(--font); color: var(--smc-accent, #D4AA4A); }
+  .total-row.big { padding: 14px 0 4px; border-top: 2px solid rgba(196,154,58,.4); margin-top: 6px; }
+  .total-row.big .label { color: #fff; font-weight: 700; }
+  .total-row.big .value { font-size: 26px; }
+  .alert { padding: 12px 16px; border-radius: 10px; font-size: 13px; line-height: 1.5; margin-top: 12px; }
+  .alert.ok { background: #d4ebe0; color: #1f5c3a; border-left: 3px solid #6B9B7A; }
+  .alert.warn { background: #fff4d6; color: #7a5a18; border-left: 3px solid #C49A3A; }
+  .alert.err { background: #ffe8e5; color: #8a2818; border-left: 3px solid #D04A3A; }
+  .reset-btn { margin-top: 20px; appearance: none; border: 1.5px solid var(--smc-border); background: #fff; padding: 10px 18px; border-radius: 8px; cursor: pointer; font: 700 12px var(--font); color: var(--smc-muted); letter-spacing: .04em; }
+  .reset-btn:hover { color: var(--smc-primary); border-color: var(--smc-primary); }
+  .nav-back { position: fixed; top: 20px; left: 20px; z-index: 100; padding: 8px 16px; background: rgba(27,47,78,.95); color: #fff; text-decoration: none; border-radius: 99px; font: 700 11px var(--font); letter-spacing: .08em; backdrop-filter: blur(10px); transition: all .25s; }
+  .nav-back:hover { background: var(--smc-accent); color: var(--smc-primary); transform: translateX(-3px); }
+  .legend-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-top: 24px; }
+  .legend-card { background: #fff; border: 1px solid var(--smc-border); border-radius: 12px; padding: 14px 16px; cursor: pointer; transition: all .25s; }
+  .legend-card.checked { background: rgba(122,210,124,.08); border-color: #7AD27C; box-shadow: 0 4px 12px rgba(122,210,124,.18); }
+  .legend-card h4 { margin: 0 0 4px; font-size: 13px; font-weight: 800; color: var(--smc-primary); display: flex; align-items: center; gap: 6px; }
+  .legend-card p { margin: 0; font-size: 11px; color: var(--smc-muted); line-height: 1.4; }
+  .legend-card .amount { font: 800 14px var(--font); color: var(--smc-accent); margin-top: 6px; }
+  .stack-summary { padding: 18px; background: var(--smc-cream, #fdf8e7); border-radius: 12px; border: 1px solid var(--smc-border); }
+  .stack-summary .stack-total { font: 800 36px var(--font); color: var(--smc-primary); letter-spacing: -.02em; }
+  .stack-summary .stack-label { font: 700 10px var(--font); letter-spacing: .12em; color: var(--smc-muted); text-transform: uppercase; }
+  canvas { max-width: 100%; height: 280px; }
+  table.proj { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 14px; }
+  table.proj th { padding: 8px; text-align: right; border-bottom: 2px solid var(--smc-accent); background: var(--smc-cream); font: 700 10px var(--font); letter-spacing: .06em; text-transform: uppercase; color: var(--smc-primary); }
+  table.proj td { padding: 8px; text-align: right; border-bottom: 1px solid var(--smc-border-w); }
+  table.proj td:first-child, table.proj th:first-child { text-align: left; font-weight: 700; color: var(--smc-primary); }
+  table.proj td.positive { color: #2f7a3f; font-weight: 700; }
+  table.proj td.negative { color: #a02a1a; }
+</style>
+</head>
+<body>
+
+<a href="index.html" class="nav-back">← Banco</a>
+
+<div class="sim-wrap">
+
+  <div class="sim-hero">
+    <div style="font: 700 11px var(--font); letter-spacing: .18em; color: var(--smc-accent); text-transform: uppercase; margin-bottom: 10px;">Doc 11 · Editable</div>
+    <h1>Simulador <em>Antonella</em></h1>
+    <p>Mové los números reales del proyecto y mirá cómo cambia el subsidio total, la facturación esperada y la utilidad mes a mes. Todos los cambios son locales en tu navegador · podés cerrar y volver a abrir sin perder lo editado.</p>
+  </div>
+
+  <div class="sim-tabs">
+    <button class="sim-tab active" data-tab="presupuesto">💰 Presupuesto Sercotec</button>
+    <button class="sim-tab" data-tab="servicios">💅 Servicios y precios</button>
+    <button class="sim-tab" data-tab="stack">🎯 Stack de fondos</button>
+    <button class="sim-tab" data-tab="proyeccion">📈 Proyección 12 meses</button>
+  </div>
+
+  <!-- TAB 1 · Presupuesto Sercotec -->
+  <div class="panel active" id="panel-presupuesto">
+    <div class="grid">
+      <div class="card">
+        <h3>Cuadro AGE <span class="badge">$500K subsidio</span></h3>
+        <div class="input-row">
+          <label>Asistencia técnica y asesoría<small>Branding + SII + DS19</small></label>
+          <span class="currency-prefix">$</span>
+          <input type="number" data-cat="age" data-key="asesoria" value="150000" step="10000">
+        </div>
+        <div class="input-row">
+          <label>Capacitación<small>Cosmetología + e-commerce</small></label>
+          <span class="currency-prefix">$</span>
+          <input type="number" data-cat="age" data-key="capacitacion" value="150000" step="10000">
+        </div>
+        <div class="input-row">
+          <label>Marketing y difusión<small>Fotos + branding + ads</small></label>
+          <span class="currency-prefix">$</span>
+          <input type="number" data-cat="age" data-key="marketing" value="200000" step="10000">
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Cuadro Inversiones <span class="badge">$3M subsidio</span></h3>
+        <div class="input-row">
+          <label>Activos fijos<small>Camilla · autoclave · equipos</small></label>
+          <span class="currency-prefix">$</span>
+          <input type="number" data-cat="inv" data-key="fijos" value="1400000" step="50000">
+        </div>
+        <div class="input-row">
+          <label>Activos intangibles<small>Sitio · agenda · pasarela</small></label>
+          <span class="currency-prefix">$</span>
+          <input type="number" data-cat="inv" data-key="intangibles" value="640000" step="20000">
+        </div>
+        <div class="input-row">
+          <label>Habilitación local<small>Pintura · iluminación · ventilación</small></label>
+          <span class="currency-prefix">$</span>
+          <input type="number" data-cat="inv" data-key="habilitacion" value="600000" step="20000">
+        </div>
+        <div class="input-row">
+          <label>Capital de trabajo<small>Stock primer mes + insumos</small></label>
+          <span class="currency-prefix">$</span>
+          <input type="number" data-cat="inv" data-key="capital" value="360000" step="20000">
+        </div>
+      </div>
+    </div>
+
+    <div class="totals">
+      <h3>Resumen presupuesto</h3>
+      <div class="total-row"><span class="label">Subtotal AGE</span><span class="value" id="sum-age">$500.000</span></div>
+      <div class="total-row"><span class="label">Subtotal Inversiones</span><span class="value" id="sum-inv">$3.000.000</span></div>
+      <div class="total-row"><span class="label">Aporte propio (3 %)</span><span class="value" id="sum-aporte">$105.000</span></div>
+      <div class="total-row big"><span class="label">Total proyecto</span><span class="value" id="sum-total">$3.605.000</span></div>
+    </div>
+
+    <div id="alert-pres" class="alert ok">✅ Plan dentro de tope Sercotec · listo para postular.</div>
+    <button class="reset-btn" data-reset="presupuesto">↺ Restaurar valores por defecto</button>
+  </div>
+
+  <!-- TAB 2 · Servicios y precios -->
+  <div class="panel" id="panel-servicios">
+    <div class="card" style="margin-top: 0;">
+      <h3>Precios y volumen mensual <span class="badge">Editar</span></h3>
+      <div id="serv-rows"></div>
+    </div>
+
+    <div class="totals">
+      <h3>Facturación proyectada</h3>
+      <div class="total-row"><span class="label">Total visitas / mes</span><span class="value" id="serv-visitas">204</span></div>
+      <div class="total-row"><span class="label">Total clientas únicas estimadas</span><span class="value" id="serv-clientas">~140</span></div>
+      <div class="total-row"><span class="label">Ticket promedio</span><span class="value" id="serv-ticket">$27.500</span></div>
+      <div class="total-row big"><span class="label">Facturación mensual</span><span class="value" id="serv-total">$5.600.000</span></div>
+    </div>
+    <button class="reset-btn" data-reset="servicios">↺ Restaurar valores por defecto</button>
+  </div>
+
+  <!-- TAB 3 · Stack de fondos -->
+  <div class="panel" id="panel-stack">
+    <p style="text-align: center; color: var(--smc-muted); margin: 0 auto 24px; max-width: 600px;">Marcá los fondos que Antonella va a postular. El total ignora deuda BancoEstado (porque es préstamo, no subsidio).</p>
+
+    <div class="legend-cards" id="stack-grid"></div>
+
+    <div class="stack-summary" style="margin-top: 30px; text-align: center;">
+      <div class="stack-label">Stack potencial total no reembolsable</div>
+      <div class="stack-total" id="stack-total">$0</div>
+      <div style="font-size: 12px; color: var(--smc-muted); margin-top: 8px;" id="stack-detalle">Marcá los fondos que vas a postular</div>
+    </div>
+  </div>
+
+  <!-- TAB 4 · Proyección 12 meses -->
+  <div class="panel" id="panel-proyeccion">
+    <div class="grid">
+      <div class="card">
+        <h3>Parámetros mensuales <span class="badge">Editar</span></h3>
+        <div class="input-row">
+          <label>Facturación inicio (mes 1)<small>Ramp-up esperado</small></label>
+          <span class="currency-prefix">$</span>
+          <input type="number" data-cat="proj" data-key="fact_inicial" value="1800000" step="100000">
+        </div>
+        <div class="input-row">
+          <label>Facturación régimen (mes 6+)<small>Meta estable</small></label>
+          <span class="currency-prefix">$</span>
+          <input type="number" data-cat="proj" data-key="fact_regimen" value="5600000" step="100000">
+        </div>
+        <div class="input-row">
+          <label>% costos variables<small>Sobre facturación</small></label>
+          <span class="currency-prefix" style="visibility:hidden">$</span>
+          <input type="number" data-cat="proj" data-key="pct_var" value="28" step="1">
+        </div>
+        <div class="input-row">
+          <label>Costos fijos mensuales<small>Arriendo + sueldos + marketing</small></label>
+          <span class="currency-prefix">$</span>
+          <input type="number" data-cat="proj" data-key="fijos" value="1490000" step="50000">
+        </div>
+        <div class="input-row">
+          <label>Capital inicial (subsidio)<small>Sercotec + ahorro</small></label>
+          <span class="currency-prefix">$</span>
+          <input type="number" data-cat="proj" data-key="capital_inicial" value="3500000" step="100000">
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Gráfico ingresos vs utilidad acumulada</h3>
+        <canvas id="chart-proj"></canvas>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top: 20px;">
+      <h3>Tabla proyección mes a mes</h3>
+      <table class="proj">
+        <thead>
+          <tr>
+            <th>Mes</th>
+            <th>Facturación</th>
+            <th>Var (–)</th>
+            <th>Fijos (–)</th>
+            <th>Utilidad</th>
+            <th>Caja acum.</th>
+          </tr>
+        </thead>
+        <tbody id="proj-tbody"></tbody>
+      </table>
+    </div>
+
+    <div class="totals">
+      <h3>Resumen Año 1</h3>
+      <div class="total-row"><span class="label">Facturación total año</span><span class="value" id="proj-fact">$0</span></div>
+      <div class="total-row"><span class="label">Utilidad operacional total</span><span class="value" id="proj-util">$0</span></div>
+      <div class="total-row big"><span class="label">Caja proyectada al mes 12</span><span class="value" id="proj-caja">$0</span></div>
+    </div>
+    <button class="reset-btn" data-reset="proyeccion">↺ Restaurar valores por defecto</button>
+  </div>
+
+</div>
+
+<script>
+const SERVICIOS = [
+  { id: 's1',  nombre: 'Limpieza facial profunda',         precio: 35000,  vol: 30 },
+  { id: 's2',  nombre: 'Limpieza facial premium RF',        precio: 55000,  vol: 12 },
+  { id: 's3',  nombre: 'Manicure tradicional',              precio: 12000,  vol: 25 },
+  { id: 's4',  nombre: 'Manicure semipermanente',           precio: 25000,  vol: 18 },
+  { id: 's5',  nombre: 'Pedicure spa',                       precio: 18000,  vol: 15 },
+  { id: 's6',  nombre: 'Depilación cera (zonas)',           precio: 15000,  vol: 30 },
+  { id: 's7',  nombre: 'Lifting de pestañas',                precio: 30000,  vol: 12 },
+  { id: 's8',  nombre: 'Extensión pelo a pelo',              precio: 50000,  vol: 8 },
+  { id: 's9',  nombre: 'Diseño + laminado cejas',            precio: 25000,  vol: 14 },
+  { id: 's10', nombre: 'Maderoterapia (sesión)',             precio: 30000,  vol: 16 },
+  { id: 's11', nombre: 'Masaje descontracturante',           precio: 35000,  vol: 10 },
+  { id: 's12', nombre: 'Pack novia / evento',                precio: 200000, vol: 4 },
+  { id: 's13', nombre: 'Productos reventa (ticket avg)',     precio: 15000,  vol: 80 }
+];
+
+const FONDOS = [
+  { id: 'abeja',   nombre: 'Capital Abeja',     monto: 3500000, tipo: 'Subsidio · no reembolsable', cuando: 'Mar 2027' },
+  { id: 'semilla', nombre: 'Capital Semilla',   monto: 3500000, tipo: 'Subsidio · no reembolsable', cuando: 'Q3-Q4 2026' },
+  { id: 'sence',   nombre: 'SENCE Capacitación',monto: 500000,  tipo: 'Bono reembolsable',         cuando: 'Abierto siempre' },
+  { id: 'corfo',   nombre: 'CORFO Mujer',       monto: 8000000, tipo: 'Subsidio · no reembolsable', cuando: 'Q2/Q4 var' },
+  { id: 'prochile',nombre: 'ProChile Mujer Exp.', monto: 5000000, tipo: 'Cofinanciamiento · año 2', cuando: 'Año 2' },
+  { id: 'fosis',   nombre: 'FOSIS Yo Emprendo', monto: 1100000, tipo: 'Capital + capacitación', cuando: 'Q1 anual' }
+];
+
+const STORAGE_KEY = 'banco-antonella-sim-v1';
+const fmt = (n) => '$' + Math.round(n).toLocaleString('es-CL');
+const fmtShort = (n) => {
+  if (n >= 1000000) return '$' + (n/1000000).toFixed(1).replace('.0','') + 'M';
+  if (n >= 1000) return '$' + Math.round(n/1000) + 'K';
+  return '$' + n;
+};
+
+// ─── Persistencia local ───
+function loadState() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch(e) { return {}; }
+}
+function saveState(state) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+let state = loadState();
+if (!state.stackChecked) state.stackChecked = { abeja: true, sence: true };
+if (!state.serv) state.serv = SERVICIOS.reduce((a,s) => (a[s.id] = {p: s.precio, v: s.vol}, a), {});
+
+// ─── Tabs ───
+document.querySelectorAll('.sim-tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.sim-tab').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById('panel-' + t.dataset.tab).classList.add('active');
+  });
+});
+
+// ─── TAB 1 · Presupuesto ───
+function calcPresupuesto() {
+  const inputs = document.querySelectorAll('#panel-presupuesto input[type="number"]');
+  let age = 0, inv = 0;
+  inputs.forEach(i => {
+    const v = parseFloat(i.value) || 0;
+    if (i.dataset.cat === 'age') age += v;
+    else if (i.dataset.cat === 'inv') inv += v;
+  });
+  const aporte = Math.round((age + inv) * 0.03);
+  const total = age + inv + aporte;
+  document.getElementById('sum-age').textContent = fmt(age);
+  document.getElementById('sum-inv').textContent = fmt(inv);
+  document.getElementById('sum-aporte').textContent = fmt(aporte);
+  document.getElementById('sum-total').textContent = fmt(total);
+
+  const alert = document.getElementById('alert-pres');
+  if (age > 1000000) { alert.className = 'alert err'; alert.innerHTML = '❌ AGE supera tope Sercotec ($1.000.000). Reducí montos.'; }
+  else if (inv > 3000000) { alert.className = 'alert warn'; alert.innerHTML = '⚠️ Inversiones supera el tope sugerido $3.000.000. Considerá rebalancear.'; }
+  else if (age + inv < 2000000) { alert.className = 'alert warn'; alert.innerHTML = '⚠️ Subsidio bajo · estás dejando plata sobre la mesa. Considerá subir Inversiones.'; }
+  else { alert.className = 'alert ok'; alert.innerHTML = '✅ Plan dentro de tope Sercotec · listo para postular.'; }
+}
+document.querySelectorAll('#panel-presupuesto input').forEach(i => i.addEventListener('input', () => { calcPresupuesto(); persist(); }));
+
+// ─── TAB 2 · Servicios ───
+function renderServicios() {
+  const root = document.getElementById('serv-rows');
+  root.innerHTML = '';
+  SERVICIOS.forEach(s => {
+    const saved = state.serv[s.id] || { p: s.precio, v: s.vol };
+    const row = document.createElement('div');
+    row.className = 'input-row';
+    row.style.gridTemplateColumns = '1fr auto auto';
+    row.innerHTML = `
+      <label>${s.nombre}<small>Visitas / mes × precio</small></label>
+      <div style="display:flex;align-items:center;gap:6px;">
+        <span class="chip">precio</span>
+        <span class="currency-prefix">$</span>
+        <input type="number" data-srv="${s.id}" data-field="p" value="${saved.p}" step="1000" style="width:90px">
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;">
+        <span class="chip">vol</span>
+        <input type="number" data-srv="${s.id}" data-field="v" value="${saved.v}" step="1" style="width:70px">
+      </div>
+    `;
+    root.appendChild(row);
+  });
+  document.querySelectorAll('#serv-rows input').forEach(i => {
+    i.addEventListener('input', () => {
+      const id = i.dataset.srv;
+      const f = i.dataset.field;
+      state.serv[id] = state.serv[id] || {};
+      state.serv[id][f] = parseFloat(i.value) || 0;
+      calcServicios();
+      persist();
+    });
+  });
+}
+function calcServicios() {
+  let visitas = 0, total = 0;
+  SERVICIOS.forEach(s => {
+    const saved = state.serv[s.id] || { p: s.precio, v: s.vol };
+    visitas += saved.v;
+    total += saved.p * saved.v;
+  });
+  const ticket = visitas ? total / visitas : 0;
+  document.getElementById('serv-visitas').textContent = Math.round(visitas);
+  document.getElementById('serv-clientas').textContent = '~' + Math.round(visitas * 0.7);
+  document.getElementById('serv-ticket').textContent = fmt(Math.round(ticket));
+  document.getElementById('serv-total').textContent = fmt(total);
+}
+
+// ─── TAB 3 · Stack ───
+function renderStack() {
+  const root = document.getElementById('stack-grid');
+  root.innerHTML = '';
+  FONDOS.forEach(f => {
+    const checked = !!state.stackChecked[f.id];
+    const card = document.createElement('div');
+    card.className = 'legend-card' + (checked ? ' checked' : '');
+    card.innerHTML = `
+      <h4>${checked ? '✅' : '⬜'} ${f.nombre}</h4>
+      <p>${f.tipo}<br><strong>${f.cuando}</strong></p>
+      <div class="amount">${fmt(f.monto)}</div>
+    `;
+    card.addEventListener('click', () => {
+      state.stackChecked[f.id] = !state.stackChecked[f.id];
+      renderStack();
+      persist();
+    });
+    root.appendChild(card);
+  });
+  let total = 0, count = 0;
+  FONDOS.forEach(f => { if (state.stackChecked[f.id]) { total += f.monto; count++; } });
+  document.getElementById('stack-total').textContent = fmt(total);
+  document.getElementById('stack-detalle').textContent = count === 0 ? 'Marcá los fondos que vas a postular' : `${count} fondo${count>1?'s':''} marcado${count>1?'s':''} · ¡a postular!`;
+}
+
+// ─── TAB 4 · Proyección ───
+function calcProyeccion() {
+  const getV = (k) => parseFloat(document.querySelector(`#panel-proyeccion input[data-key="${k}"]`).value) || 0;
+  const factIni = getV('fact_inicial');
+  const factReg = getV('fact_regimen');
+  const pctVar = getV('pct_var') / 100;
+  const fijos = getV('fijos');
+  const cap = getV('capital_inicial');
+
+  const meses = [];
+  let cajaAcum = cap;
+  let factTotal = 0, utilTotal = 0;
+  for (let m = 1; m <= 12; m++) {
+    let fact;
+    if (m === 1) fact = factIni;
+    else if (m >= 6) fact = factReg;
+    else fact = factIni + ((factReg - factIni) * (m - 1) / 5);
+    const variables = fact * pctVar;
+    const util = fact - variables - fijos;
+    cajaAcum += util;
+    meses.push({ m, fact, variables, fijos, util, caja: cajaAcum });
+    factTotal += fact;
+    utilTotal += util;
+  }
+
+  const tbody = document.getElementById('proj-tbody');
+  tbody.innerHTML = meses.map(r => `
+    <tr>
+      <td>Mes ${r.m}</td>
+      <td>${fmt(r.fact)}</td>
+      <td>${fmtShort(-r.variables)}</td>
+      <td>${fmtShort(-r.fijos)}</td>
+      <td class="${r.util >= 0 ? 'positive' : 'negative'}">${fmt(r.util)}</td>
+      <td class="${r.caja >= 0 ? 'positive' : 'negative'}">${fmt(r.caja)}</td>
+    </tr>
+  `).join('');
+
+  document.getElementById('proj-fact').textContent = fmt(factTotal);
+  document.getElementById('proj-util').textContent = fmt(utilTotal);
+  document.getElementById('proj-caja').textContent = fmt(cajaAcum);
+  drawChart(meses);
+}
+function drawChart(meses) {
+  const c = document.getElementById('chart-proj');
+  const ctx = c.getContext('2d');
+  const W = c.offsetWidth * (window.devicePixelRatio || 1);
+  const H = 280 * (window.devicePixelRatio || 1);
+  c.width = W; c.height = H;
+  ctx.scale(window.devicePixelRatio || 1, window.devicePixelRatio || 1);
+  const w = c.offsetWidth, h = 280;
+  ctx.clearRect(0, 0, w, h);
+  const margin = { l: 50, r: 20, t: 30, b: 30 };
+  const innerW = w - margin.l - margin.r;
+  const innerH = h - margin.t - margin.b;
+  const maxFact = Math.max(...meses.map(m => m.fact));
+  const maxCaja = Math.max(...meses.map(m => Math.abs(m.caja)));
+  const maxV = Math.max(maxFact, maxCaja);
+  const minV = Math.min(0, ...meses.map(m => m.caja));
+  const range = maxV - minV;
+  const xs = meses.map((_, i) => margin.l + (i / 11) * innerW);
+  const yFact = meses.map(m => margin.t + innerH - ((m.fact - minV) / range) * innerH);
+  const yCaja = meses.map(m => margin.t + innerH - ((m.caja - minV) / range) * innerH);
+  const y0 = margin.t + innerH - ((0 - minV) / range) * innerH;
+
+  ctx.strokeStyle = '#e8e8ed'; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(margin.l, y0); ctx.lineTo(w - margin.r, y0); ctx.stroke();
+
+  ctx.strokeStyle = '#C49A3A'; ctx.lineWidth = 2.5; ctx.beginPath();
+  xs.forEach((x, i) => i ? ctx.lineTo(x, yFact[i]) : ctx.moveTo(x, yFact[i])); ctx.stroke();
+  ctx.fillStyle = '#C49A3A'; xs.forEach((x, i) => { ctx.beginPath(); ctx.arc(x, yFact[i], 3.5, 0, Math.PI*2); ctx.fill(); });
+
+  ctx.strokeStyle = '#6B9B7A'; ctx.lineWidth = 2.5; ctx.beginPath();
+  xs.forEach((x, i) => i ? ctx.lineTo(x, yCaja[i]) : ctx.moveTo(x, yCaja[i])); ctx.stroke();
+  ctx.fillStyle = '#6B9B7A'; xs.forEach((x, i) => { ctx.beginPath(); ctx.arc(x, yCaja[i], 3.5, 0, Math.PI*2); ctx.fill(); });
+
+  ctx.fillStyle = '#6e6e73'; ctx.font = '11px var(--font)';
+  xs.forEach((x, i) => { ctx.fillText('M' + (i+1), x - 9, h - 10); });
+
+  ctx.fillStyle = '#C49A3A'; ctx.fillRect(w - 130, 8, 12, 3);
+  ctx.fillStyle = '#1d1d1f'; ctx.font = 'bold 11px var(--font)'; ctx.fillText('Facturación', w - 112, 13);
+  ctx.fillStyle = '#6B9B7A'; ctx.fillRect(w - 130, 22, 12, 3);
+  ctx.fillStyle = '#1d1d1f'; ctx.fillText('Caja acumul.', w - 112, 27);
+}
+
+document.querySelectorAll('#panel-proyeccion input').forEach(i => i.addEventListener('input', () => { calcProyeccion(); persist(); }));
+
+// ─── Persistencia ───
+function persist() {
+  state.presValues = {};
+  document.querySelectorAll('#panel-presupuesto input').forEach(i => {
+    state.presValues[i.dataset.cat + '-' + i.dataset.key] = i.value;
+  });
+  state.projValues = {};
+  document.querySelectorAll('#panel-proyeccion input').forEach(i => {
+    state.projValues[i.dataset.key] = i.value;
+  });
+  saveState(state);
+}
+function restoreFromState() {
+  if (state.presValues) {
+    document.querySelectorAll('#panel-presupuesto input').forEach(i => {
+      const k = i.dataset.cat + '-' + i.dataset.key;
+      if (state.presValues[k]) i.value = state.presValues[k];
+    });
+  }
+  if (state.projValues) {
+    document.querySelectorAll('#panel-proyeccion input').forEach(i => {
+      const k = i.dataset.key;
+      if (state.projValues[k]) i.value = state.projValues[k];
+    });
+  }
+}
+
+// ─── Reset ───
+document.querySelectorAll('.reset-btn').forEach(b => {
+  b.addEventListener('click', () => {
+    if (!confirm('¿Restaurar valores por defecto de esta sección?')) return;
+    const what = b.dataset.reset;
+    if (what === 'presupuesto') {
+      delete state.presValues;
+      saveState(state);
+      const defaults = { 'age-asesoria': 150000, 'age-capacitacion': 150000, 'age-marketing': 200000, 'inv-fijos': 1400000, 'inv-intangibles': 640000, 'inv-habilitacion': 600000, 'inv-capital': 360000 };
+      document.querySelectorAll('#panel-presupuesto input').forEach(i => {
+        const k = i.dataset.cat + '-' + i.dataset.key;
+        if (defaults[k] != null) i.value = defaults[k];
+      });
+      calcPresupuesto();
+    } else if (what === 'servicios') {
+      state.serv = SERVICIOS.reduce((a,s) => (a[s.id] = {p: s.precio, v: s.vol}, a), {});
+      saveState(state);
+      renderServicios();
+      calcServicios();
+    } else if (what === 'proyeccion') {
+      delete state.projValues;
+      saveState(state);
+      const defaults = { fact_inicial: 1800000, fact_regimen: 5600000, pct_var: 28, fijos: 1490000, capital_inicial: 3500000 };
+      document.querySelectorAll('#panel-proyeccion input').forEach(i => {
+        if (defaults[i.dataset.key] != null) i.value = defaults[i.dataset.key];
+      });
+      calcProyeccion();
+    }
+  });
+});
+
+// ─── Boot ───
+restoreFromState();
+calcPresupuesto();
+renderServicios();
+calcServicios();
+renderStack();
+calcProyeccion();
+window.addEventListener('resize', () => calcProyeccion());
+</script>
+
+<script src="auth.js"></script>
+</body>
+</html>

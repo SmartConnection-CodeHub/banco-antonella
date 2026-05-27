@@ -1,0 +1,26 @@
+{
+  "title": "Roadmap 30 días · Centro Antonella",
+  "startDate": "2026-05-27",
+  "lanes": [
+    {"id": "anto",   "label": "Antonella", "color": "#C49A3A"},
+    {"id": "smc",    "label": "SMC",       "color": "#1B2F4E"},
+    {"id": "barbara","label": "Asesores",  "color": "#6B9B7A"}
+  ],
+  "items": [
+    {"id": "t1",  "lane": "anto",    "label": "Decisión ruta DS19",         "start": 1,  "end": 2,  "kind": "decision"},
+    {"id": "t2",  "lane": "anto",    "label": "Asesoría MINVU",             "start": 3,  "end": 3,  "kind": "milestone"},
+    {"id": "t3",  "lane": "anto",    "label": "SENCE e-commerce 20h",       "start": 3,  "end": 9,  "kind": "task"},
+    {"id": "t4",  "lane": "anto",    "label": "Cotizaciones 3× por ítem",   "start": 4,  "end": 11, "kind": "task"},
+    {"id": "t5",  "lane": "barbara", "label": "Tutoría Sercotec Viña",      "start": 10, "end": 10, "kind": "milestone"},
+    {"id": "t6",  "lane": "smc",     "label": "Refinar docs 04-05-07",      "start": 8,  "end": 14, "kind": "task"},
+    {"id": "t7",  "lane": "anto",    "label": "Visitar 3 locales",          "start": 10, "end": 12, "kind": "task"},
+    {"id": "t8",  "lane": "smc",     "label": "Generar dossier final",      "start": 12, "end": 15, "kind": "task"},
+    {"id": "t9",  "lane": "anto",    "label": "POSTULAR Sercotec",          "start": 16, "end": 17, "kind": "milestone-red"},
+    {"id": "t10", "lane": "smc",     "label": "Levantar sitio + agenda",    "start": 17, "end": 28, "kind": "task"},
+    {"id": "t11", "lane": "anto",    "label": "SENCE cosmetología 80h",     "start": 17, "end": 45, "kind": "task"},
+    {"id": "t12", "lane": "anto",    "label": "INAPI + SII iniciación",     "start": 19, "end": 22, "kind": "task"},
+    {"id": "t13", "lane": "smc",     "label": "Identidad visual + IG",      "start": 23, "end": 30, "kind": "task"},
+    {"id": "t14", "lane": "barbara", "label": "Evaluación Sercotec",        "start": 30, "end": 75, "kind": "wait"},
+    {"id": "t15", "lane": "anto",    "label": "🎯 ADJUDICACIÓN (esperado)", "start": 60, "end": 75, "kind": "milestone-gold"}
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "title": "Value Proposition Canvas · Centro Estética Antonella",
+  "customer": {
+    "jobs": [
+      "Verse cuidada sin gastar horas",
+      "Tener servicio estético confiable cerca",
+      "Reservar online sin esperar respuesta WhatsApp",
+      "Comprar productos profesionales sin ir a Falabella",
+      "Resultado garantizado para evento puntual"
+    ],
+    "pains": [
+      "Agendas saturadas o no responden",
+      "Sin pago tarjeta · solo efectivo",
+      "Productos de farmacia genéricos no funcionan",
+      "Estilistas que no escuchan qué quiere",
+      "Pánico antes de evento sin garantía resultado"
+    ],
+    "gains": [
+      "Sentirse bien con uno mismo todo el mes",
+      "Foto Instagram impecable",
+      "Tiempo para ella en un día caótico",
+      "Pertenecer a la 'tribu' del centro · clienta VIP",
+      "Resultado novia memorable · referidas"
+    ]
+  },
+  "value": {
+    "products": [
+      "Servicios cabina · 14 categorías",
+      "Productos profesionales reventa",
+      "Pack novia / eventos curado",
+      "Bonos regalo digitales",
+      "Agenda online 24/7"
+    ],
+    "painRelievers": [
+      "Reserva online · cero llamadas",
+      "Pago Webpay / MercadoPago / efectivo",
+      "Recordatorio WhatsApp 24h + 2h",
+      "Diagnóstico personalizado por servicio",
+      "Pack novia con prueba previa garantizada"
+    ],
+    "gainCreators": [
+      "Local con estética IG-ready · stories propias",
+      "Programa fidelización 10ª visita gratis",
+      "Eventos exclusivos clientas frecuentes",
+      "Línea premium maderoterapia / radiofrecuencia",
+      "Productos para llevar continuidad en casa"
+    ]
+  }
+}

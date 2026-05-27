@@ -1,0 +1,40 @@
+{
+  "title": "Distribución de costos mensuales · objetivo $5.6 M facturación",
+  "yAxis": "CLP",
+  "unit": "$",
+  "groups": [
+    {
+      "id": "fijos",
+      "label": "Costos fijos",
+      "color": "#1B2F4E",
+      "values": [
+        {"label": "Arriendo",            "value": 450000},
+        {"label": "Servicios básicos",   "value": 120000},
+        {"label": "Plataformas",         "value": 40000},
+        {"label": "Contador",            "value": 80000},
+        {"label": "Marketing",           "value": 200000},
+        {"label": "Sueldo Anto",         "value": 600000}
+      ]
+    },
+    {
+      "id": "variables",
+      "label": "Costos variables (sobre $5.6M)",
+      "color": "#C49A3A",
+      "values": [
+        {"label": "Insumos cabina (18%)",     "value": 1008000},
+        {"label": "CMV tienda (5%)",          "value": 280000},
+        {"label": "Comisiones Webpay (2.5%)", "value": 140000},
+        {"label": "Logística (1.5%)",         "value": 84000},
+        {"label": "Descartables (4%)",        "value": 224000}
+      ]
+    },
+    {
+      "id": "utilidad",
+      "label": "Utilidad operacional",
+      "color": "#6B9B7A",
+      "values": [
+        {"label": "Utilidad neta", "value": 2374000}
+      ]
+    }
+  ]
+}

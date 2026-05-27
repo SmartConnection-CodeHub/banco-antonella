@@ -1,0 +1,49 @@
+{
+  "title": "DS19 vs fondos públicos · 3 rutas",
+  "xAxis": "Riesgo de perder DS19",
+  "yAxis": "Payoff capital obtenido",
+  "quadrants": [
+    {"label": "Zona óptima", "x": "right", "y": "top", "color": "var(--sage-light, #d4ebe0)"},
+    {"label": "Ganancia rápida", "x": "right", "y": "bottom", "color": "var(--gold-pale, #f5ebd6)"},
+    {"label": "Seguro pero lento", "x": "left", "y": "top", "color": "#e6f0ff"},
+    {"label": "Zona evitar", "x": "left", "y": "bottom", "color": "var(--red-soft, #ffe8e5)"}
+  ],
+  "items": [
+    {
+      "id": "ruta-a",
+      "label": "Ruta A · DS19 primero",
+      "x": 15,
+      "y": 35,
+      "size": "md",
+      "color": "#4F8FFF",
+      "note": "Solo SENCE mientras. Centro empieza recién en 2027."
+    },
+    {
+      "id": "ruta-b",
+      "label": "Ruta B · Stack paralelo",
+      "x": 55,
+      "y": 90,
+      "size": "lg",
+      "color": "#6B9B7A",
+      "note": "DS19 + Capital Abeja simultáneo. Requiere Bárbara como asesor."
+    },
+    {
+      "id": "ruta-c",
+      "label": "Ruta C · Centro primero",
+      "x": 35,
+      "y": 70,
+      "size": "md",
+      "color": "#C49A3A",
+      "note": "Capital Semilla 2026 → renta acreditable → DS19 en 18 meses."
+    },
+    {
+      "id": "ruta-x",
+      "label": "Ruta evitar · todo informal",
+      "x": 85,
+      "y": 20,
+      "size": "sm",
+      "color": "#D04A3A",
+      "note": "Boletas sin coordinar con MINVU. Pierde DS19."
+    }
+  ]
+}

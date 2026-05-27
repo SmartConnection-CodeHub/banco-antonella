@@ -1,0 +1,41 @@
+{
+  "title": "Jobs to be done · 3 perfiles centro estética",
+  "personas": [
+    {
+      "id": "vecina",
+      "name": "La vecina del barrio",
+      "age": "35–55",
+      "icon": "🏠",
+      "color": "#6B9B7A",
+      "functional": "Mantenimiento corporal y manos/pies de rutina · estética cerca de casa · no perder tarde en traslados.",
+      "emotional": "Sentirse cuidada · una pausa en su rutina familiar · 'tiempo para mí' accesible.",
+      "social": "Verse arreglada cuando se junta con amigas · que sus hijas vean a su mamá cuidándose.",
+      "ticket": "$35–55 K / mes",
+      "frequency": "1.5× / mes"
+    },
+    {
+      "id": "joven",
+      "name": "La joven profesional",
+      "age": "24–34",
+      "icon": "💼",
+      "color": "#C49A3A",
+      "functional": "Servicio estético eficiente · agenda online · pago tarjeta · resultados visibles para foto Instagram.",
+      "emotional": "Verse profesional sin esfuerzo · sentirse al día con tendencias · autocuidado validado por su tribu.",
+      "social": "Aparecer impecable en LinkedIn · reuniones · citas · stories. Estatus discreto de 'me cuido'.",
+      "ticket": "$35–65 K / visita",
+      "frequency": "1–2× / mes"
+    },
+    {
+      "id": "novia",
+      "name": "La novia y eventos",
+      "age": "22–32",
+      "icon": "💍",
+      "color": "#D4AA4A",
+      "functional": "Pack completo pre-evento · estandarizar todo en un solo lugar · ahorrar tiempo.",
+      "emotional": "Verse perfecta en el día más importante · cero ansiedad por imprevistos estéticos.",
+      "social": "Que la foto del evento valga la pena · que las amigas pregunten 'dónde te hiciste eso'.",
+      "ticket": "$120–300 K / evento",
+      "frequency": "1–3 visitas por evento"
+    }
+  ]
+}

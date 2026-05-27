@@ -1,6 +1,6 @@
 /* ============================================================
    Banco Antonella · Simulador Drawer (botón lateral derecho)
-   · Estilo LEMPAR · slide-in desde derecha con iframe simulador
+    · slide-in desde derecha con iframe simulador
    · Botón "Guardar / Exportar JSON" para llevar valores a GitHub
    ============================================================ */
 (function () {
@@ -194,7 +194,8 @@
     drawer.querySelector('#sim-whatsapp').addEventListener('click', shareWhatsApp);
     drawer.querySelector('#sim-reset').addEventListener('click', resetSim);
     drawer.querySelector('#sim-fullscreen').addEventListener('click', () => {
-      window.location.href = '11-simulador.html';
+      closeDrawer();
+      window.open('11-simulador.html', '_blank');
     });
 
     updateSaveStatus();
@@ -323,6 +324,10 @@
     document.removeEventListener('keydown', escClose);
     if (backdrop) { backdrop.remove(); backdrop = null; }
     if (drawer) { drawer.remove(); drawer = null; }
+    // Re-renderizar variables propagadas en la página
+    if (window.AntoVars && typeof window.AntoVars.render === 'function') {
+      window.AntoVars.render();
+    }
   }
   function escClose(e) { if (e.key === 'Escape') closeDrawer(); }
   trigger.addEventListener('click', openDrawer);
